@@ -22,15 +22,14 @@ def teardown_request(exception):
         g.db.close()
 
 
-
-
 from task.task import task
 app.register_blueprint(task, url_prefix='/task')
 
 from file.file import file
 app.register_blueprint(file, url_prefix='/file')
 
-
+from board.board import board
+app.register_blueprint(board, url_prefix='/board')
 
 
 if __name__ == '__main__':

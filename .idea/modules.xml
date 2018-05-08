@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$USER_HOME$/DQMP-APScheduler/.idea/DQMP-APScheduler.iml" filepath="$USER_HOME$/DQMP-APScheduler/.idea/DQMP-APScheduler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/DQMP-Scheduler.iml" filepath="$PROJECT_DIR$/.idea/DQMP-Scheduler.iml" />
     </modules>
   </component>
 </project>
