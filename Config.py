@@ -1,5 +1,5 @@
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-
+import sys
 
 class Config(object):
     # JOBS = [
@@ -21,3 +21,5 @@ class Config(object):
     SCHEDULER_EXECUTORS = {
       'default': {'type': 'threadpool', 'max_workers': 20}
     }
+
+    UPLOAD_FOLDER = sys.path[0] + '/upload'
