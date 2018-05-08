@@ -35,7 +35,6 @@ app.register_blueprint(file, url_prefix='/file')
 
 if __name__ == '__main__':
     app.config.from_object(Config())
-
     # it is also possible to enable the API directly
     scheduler.api_enabled = True
     scheduler.init_app(app)
