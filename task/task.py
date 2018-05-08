@@ -32,5 +32,5 @@ def add_task():
                                        description, tag, enabled, frequency,
                                        task_type, threshold, filepath, upload_time,
                                        update_time, upload_user_id))
-    
+
     return jsonify(cur)
