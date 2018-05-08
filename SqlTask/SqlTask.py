@@ -9,7 +9,7 @@ class SqlTask(object):
     def __init__(self):
       self.str = 'self'
 
-    def run(self):
+    def run(self, user_id, ):
         config = open(sys.path[0] + '/SqlTask/config.json', 'r')
         config = config.read()
         config = json.loads(config)
@@ -23,4 +23,3 @@ class SqlTask(object):
         print(type(stmt))
         result = ibm_db.fetch_assoc(stmt)
         print(result)
-        # print(sys.path[0])

@@ -22,4 +22,4 @@ class Config(object):
       'default': {'type': 'threadpool', 'max_workers': 20}
     }
 
-    UPLOAD_FOLDER = sys.path[0] + '/upload'
+    UPLOAD_FOLDER = sys.path[0] + '/uploads'

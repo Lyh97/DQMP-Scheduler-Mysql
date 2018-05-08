@@ -8,7 +8,7 @@ file = Blueprint('file', __name__)
 UPLOAD_FOLDER = sys.path[0] + '/static/uploads'
 ALLOWED_EXTENSIONS = set(['sql'])
 
-@file.route('/upload/', methods=['GET', 'POST'])
+@file.route('/uploads/', methods=['GET', 'POST'])
 def upload_file():
     f = request.files['testfile']
     print(f.filename)
