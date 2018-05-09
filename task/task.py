@@ -97,3 +97,8 @@ def selectTaskLogByTaskId():
     task = query_db_outside(query['selctTaskLogById'], (taskid,))
 
     return jsonify({'code':200,'message':'ok','data':task})
+
+# 查询任务history
+@task.route('/select_history',methods=['POST'])
+def selectHistoryById():
+    return jsonify({'code': 200, 'message': 'ok', 'data': ''})
