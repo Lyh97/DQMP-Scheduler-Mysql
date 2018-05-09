@@ -1,8 +1,11 @@
-from flask import Blueprint, request, jsonify, g
-from db.query_db import query_db
+from flask import Blueprint, request, jsonify
+from db.query_db import query_db_outside
 from .sql import query
-from SqlTask.SqlTask import SqlTask
+from SqlTask.SqlTask import run
 import time
+import __main__
+
+
 
 task = Blueprint('task', __name__)
 
@@ -20,7 +23,7 @@ def add_task():
     email = request.form.get('email')
     description = request.form.get('description')         # The description of the task
     tag = request.form.get('tag')                         # The tag of the task
-    enabled = request.form.get('enabled')                  # Whether the available
+    enabled = eval(request.form.get('enabled'))               # Whether the available
     freqency = request.form.get('freqency')
     task_type = request.form.get('task_type')
     threshold = int(request.form.get('threshold'))             # The threshold of result for sending the notice to owner
@@ -36,12 +39,54 @@ def add_task():
                                        task_type, threshold, filepath, upload_time,
                                        update_time, upload_user_id))
 
-    cur = query_db(query['add_task'], (taskid, category, owner, email,
+    cur = query_db_outside(query['add_task'], (taskid, category, owner, email,
                                        description, tag, enabled, freqency,
                                        task_type, threshold, filepath, upload_time,
                                        update_time, upload_user_id))
+    print(type(run_now))
+    print(run_now)
     if run_now:
-        sqlTask = SqlTask()
-        sqlTask.run()
+        print('run now')
+        # sqlTask = SqlTask()
+        run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency)
 
-    return jsonify(cur)
+    if enabled:
+        # sqlTask = SqlTask()
+        if freqency == 'daily':
+            __main__.scheduler.add_job(func=run, kwargs={'user_id':upload_user_id, 'taskid':taskid, 'filepath':filepath, 'freqency':freqency}, id=taskid, trigger='interval', seconds=20)
+            pass
+    return jsonify({'code': 200 })
+
+# 查询task列表
+@task.route('/task_list',methods=['POST'])
+def selectTaskListByUserId():
+    taskList = query_db_outside(query['select_tasklist'])
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': taskList})
+
+# 按条件筛选task
+@task.route('/task_filtrate',methods=['POST'])
+def filtrateSelect():
+    freqency = request.form.get('freqency')
+    enabled = request.form.get('enabled')
+    category = request.form.get('category')
+    sql = "SELECT * ,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid) as totalrun,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid And a.status = 0) as totalfails From task WHERE owner = 'Account'"
+
+    if freqency != '':
+        sql += " AND freqency = '" + freqency + "'"
+    if enabled != '':
+        sql += " AND enabled = '" + enabled + "'"
+    if category != '':
+        sql += " AND category = '" + category + "'"
+
+    taskList = query_db_outside(sql)
+
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': taskList})
+
+# 查看任务详情
+@task.route('/select',methods=['POST'])
+def selectById():
+    taskid = request.form.get('taskid')
+
+    task = query_db_outside(query['select_task'], (taskid,))
+
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': task})
