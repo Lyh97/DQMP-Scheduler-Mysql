@@ -26,5 +26,3 @@ def run(user_id, taskid, filepath, freqency):
     result_time = time.strftime('%Y-%m-%d', time.localtime())
     insert_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
     query_db_outside(query['add_dailylog'], (taskid, result_count, result_time, 1, user_id, insert_time))
-
-

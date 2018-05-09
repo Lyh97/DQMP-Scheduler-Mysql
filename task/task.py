@@ -43,8 +43,6 @@ def add_task():
                                        description, tag, enabled, freqency,
                                        task_type, threshold, filepath, upload_time,
                                        update_time, upload_user_id))
-    print(type(run_now))
-    print(run_now)
     if run_now:
         print('run now')
         # sqlTask = SqlTask()
@@ -90,3 +88,12 @@ def selectById():
     task = query_db_outside(query['select_task'], (taskid,))
 
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': task})
+
+# 查询特定task的运行记录
+@task.route('/selctTaskLogById',methods=['POST'])
+def selectTaskLogByTaskId():
+    taskid = request.form.get('taskid')
+
+    task = query_db_outside(query['selctTaskLogById'], (taskid,))
+
+    return jsonify({'code':200,'message':'ok','data':task})

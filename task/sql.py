@@ -13,7 +13,7 @@ query = {
                       ?, ?)
     ''',
     'select_tasklist': '''
-      SELECT * ,
+    SELECT * ,
       (select COUNT(taskid)
        from result_tab a
        WHERE a.taskid = task.taskid) as totalrun,
@@ -28,6 +28,12 @@ query = {
       FROM task
       WHERE
       taskid = ?
+    ''',
+    'selctTaskLogById': '''
+    SELECT *
+    FROM result_tab
+    WHERE
+    taskid = ?
     '''
 }
 
