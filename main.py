@@ -6,7 +6,8 @@ from flask_cors import CORS
 import sqlite3
 from task.task import task
 from file.file import file
-
+from board.board import board
+from TaskLog.TaskLog import TaskLog
 
 app = Flask(__name__)
 scheduler = APScheduler()
@@ -27,11 +28,11 @@ DATABASE = './db/taskDB.db'
 
 app.register_blueprint(task, url_prefix='/task')
 
-
 app.register_blueprint(file, url_prefix='/file')
 
-from board.board import board
 app.register_blueprint(board, url_prefix='/board')
+
+app.register_blueprint(TaskLog, url_prefix='/TaskLog')
 
 
 if __name__ == '__main__':

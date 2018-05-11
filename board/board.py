@@ -16,10 +16,10 @@ def selectDailyListByUserId():
     daily_data = []
     daily_err = []
 
-    for i in range(len(dailyList)):
-      daily_date_list.append(dailyList[i]['Statistictime'])
-      daily_data.append(dailyList[i]['Totalnumberoftasks'])
-      daily_err.append(dailyList[i]['Totalnumberoferrortasks'])
+    for i in dailyList:
+      daily_date_list.append(i['Statistictime'])
+      daily_data.append(i['Totalnumberoftasks'])
+      daily_err.append(i['Totalnumberoferrortasks'])
 
     dailyLists = []
     dailyLists.append(daily_date_list)
@@ -36,10 +36,10 @@ def selectWeeklyByUserId():
     weekly_data = []
     weekly_err = []
 
-    for i in range(len(weeklyList)):
-        weekly_date_list.append(weeklyList[i]['Statistictime'])
-        weekly_data.append(weeklyList[i]['Totalnumberoftasks'])
-        weekly_err.append(weeklyList[i]['Totalnumberoferrortasks'])
+    for weeklylist in weeklyList:
+        weekly_date_list.append(weeklylist['Statistictime'])
+        weekly_data.append(weeklylist['Totalnumberoftasks'])
+        weekly_err.append(weeklylist['Totalnumberoferrortasks'])
 
     weeklyLists = []
     weeklyLists.append(weekly_date_list)
