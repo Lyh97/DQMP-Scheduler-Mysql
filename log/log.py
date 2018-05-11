@@ -45,9 +45,21 @@ def selectTaskLogByTaskId():
 
     task = query_db_outside(query['selctTaskLogById'], (taskid,))
 
-    return jsonify({'code':200,'message':'ok','data':task})
+    date = []
+    result = []
 
-# 查询任务history
-@log.route('/select_history',methods=['POST'])
+    for i in task:
+        date.append(i['run_time'])
+        result.append(i['result'])
+
+    return jsonify({'code':200,'message':'ok','data':{'tab_data':task,'chart_data':{'run_time':date,'result':result}}})
+
+# 修改comments
+@log.route('/updateComment',methods=['POST'])
 def selectHistoryById():
+    id = request.form.get('id')
+    comments = request.form.get('comments')
+
+    taskList = query_db_outside(query['updateComment'], (comments,id,))
+
     return jsonify({'code': 200, 'message': 'ok', 'data': ''})
