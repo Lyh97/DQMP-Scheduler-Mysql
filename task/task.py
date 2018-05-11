@@ -34,42 +34,34 @@ def add_task():
     upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
     update_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
-    print((taskid, category, owner, email,
-                                       description, tag, enabled, freqency,
-                                       task_type, threshold, filepath, upload_time,
-                                       update_time, upload_user_id))
-
     cur = query_db_outside(query['add_task'], (taskid, category, owner, email,
                                        description, tag, enabled, freqency,
                                        task_type, threshold, filepath, upload_time,
                                        update_time, upload_user_id))
     if run_now:
-        print('run now')
-        # sqlTask = SqlTask()
         run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency)
 
     if enabled:
-        # sqlTask = SqlTask()
         if freqency == 'daily':
             __main__.scheduler.add_job(func=run, kwargs={'user_id':upload_user_id, 'taskid':taskid, 'filepath':filepath, 'freqency':freqency}, id=taskid, trigger='interval', seconds=20)
             pass
     return jsonify({'code': 200 })
 
 # 查询task列表
-@task.route('/task_list',methods=['POST'])
+@task.route('/list',methods=['POST'])
 def selectTaskListByUserId():
     taskList = query_db_outside(query['select_tasklist'])
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': taskList})
 
 # 按条件筛选task
-@task.route('/task_filtrate',methods=['POST'])
+@task.route('/filtrate',methods=['POST'])
 def filtrateSelect():
     freqency = request.form.get('freqency')
     enabled = request.form.get('enabled')
     category = request.form.get('category')
     sql = "SELECT * ,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid) as totalrun,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid And a.status = 0) as totalfails From task WHERE owner = 'Account'"
 
-    if freqency != '':
+    if freqency:
         sql += " AND freqency = '" + freqency + "'"
     if enabled != '':
         sql += " AND enabled = '" + enabled + "'"
