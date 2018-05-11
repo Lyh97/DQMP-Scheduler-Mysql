@@ -1,15 +1,13 @@
-import sqlite3
-import sys
 from db.query_db import query_db_outside
 from flask import Blueprint, jsonify
 from .sql import query
-from file.file import dict_factory
 
 board = Blueprint('board', __name__)
 
 # 查询daily数据
-@board.route('/daily_list', methods=['POST'])
+@board.route('/daily_list', methods=['GET','POST'])
 def selectDailyListByUserId():
+    # print('daily')
     dailyList = query_db_outside(query['select_daily'])
 
     daily_date_list=[]
@@ -28,8 +26,9 @@ def selectDailyListByUserId():
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': {'tabData':dailyList,'chartData':dailyLists}})
 
 # 查询weekly数据
-@board.route('/weekly_list', methods=['POST'])
+@board.route('/weekly_list', methods=['GET','POST'])
 def selectWeeklyByUserId():
+    # print('weekly')
     weeklyList = query_db_outside(query['select_weekly'])
 
     weekly_date_list = []
@@ -48,7 +47,7 @@ def selectWeeklyByUserId():
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': {'tabData': weeklyList, 'chartData': weeklyLists}})
 
 # 查询monthly数据
-@board.route('/monthly_list', methods=['POST'])
+@board.route('/monthly_list', methods=['GET','POST'])
 def selectMonthlyByUserId():
     monthlyList = query_db_outside(query['monthly_list'])
 

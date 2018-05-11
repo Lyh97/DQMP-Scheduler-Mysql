@@ -1,13 +1,11 @@
-import sys
-from flask import Flask, g
+from flask import Flask
 from flask_apscheduler import APScheduler
 from Config import Config
 from flask_cors import CORS
-import sqlite3
 from task.task import task
 from file.file import file
 from board.board import board
-from TaskLog.TaskLog import TaskLog
+from log.log import log
 
 app = Flask(__name__)
 scheduler = APScheduler()
@@ -32,7 +30,7 @@ app.register_blueprint(file, url_prefix='/file')
 
 app.register_blueprint(board, url_prefix='/board')
 
-app.register_blueprint(TaskLog, url_prefix='/TaskLog')
+app.register_blueprint(log, url_prefix='/log')
 
 
 if __name__ == '__main__':
@@ -42,5 +40,4 @@ if __name__ == '__main__':
     scheduler.init_app(app)
     scheduler.start()
     CORS(app)
-    # print(sys.modules)
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True, threaded=True)

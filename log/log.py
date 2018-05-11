@@ -2,16 +2,16 @@ from flask import Blueprint, request, jsonify
 from db.query_db import query_db_outside
 from .sql import query
 
-TaskLog = Blueprint('TaskLog', __name__)
+log = Blueprint('log', __name__)
 
 # 查询task列表
-@TaskLog.route('/list',methods=['POST'])
+@log.route('/list',methods=['POST'])
 def selectTaskListByUserId():
     taskList = query_db_outside(query['select_tasklist'])
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': taskList})
 
 # 按条件筛选task
-@TaskLog.route('/filtrate',methods=['POST'])
+@log.route('/filtrate',methods=['POST'])
 def filtrateSelect():
     freqency = request.form.get('freqency')
     enabled = request.form.get('enabled')
@@ -30,7 +30,7 @@ def filtrateSelect():
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': taskList})
 
 # 查看任务详情
-@TaskLog.route('/select',methods=['POST'])
+@log.route('/select',methods=['POST'])
 def selectById():
     taskid = request.form.get('taskid')
 
@@ -39,7 +39,7 @@ def selectById():
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': task})
 
 # 查询特定task的运行记录
-@TaskLog.route('/selctTaskLogById',methods=['POST'])
+@log.route('/selctTaskLogById',methods=['POST'])
 def selectTaskLogByTaskId():
     taskid = request.form.get('taskid')
 
@@ -48,6 +48,6 @@ def selectTaskLogByTaskId():
     return jsonify({'code':200,'message':'ok','data':task})
 
 # 查询任务history
-@TaskLog.route('/select_history',methods=['POST'])
+@log.route('/select_history',methods=['POST'])
 def selectHistoryById():
     return jsonify({'code': 200, 'message': 'ok', 'data': ''})
