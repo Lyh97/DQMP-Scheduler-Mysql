@@ -30,6 +30,7 @@ def add_task():
     filepath = request.form.get('file_path')              # The path of the task need to run
     run_now = eval(request.form.get('run_now'))           # just run now
     upload_user_id = int(request.form.get('upload_user_id'))
+    taskname = request.form.get('taskname')
 
     upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
     update_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
@@ -37,14 +38,35 @@ def add_task():
     cur = query_db_outside(query['add_task'], (taskid, category, owner, email,
                                        description, tag, enabled, freqency,
                                        task_type, threshold, filepath, upload_time,
-                                       update_time, upload_user_id))
+                                       update_time, upload_user_id, taskname))
     if run_now:
-        run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency)
+        run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency, threshold=threshold, taskname=taskname)
 
     if enabled:
         if freqency == 'daily':
-            __main__.scheduler.add_job(func=run, kwargs={'user_id':upload_user_id, 'taskid':taskid, 'filepath':filepath, 'freqency':freqency}, id=taskid, trigger='interval', seconds=20)
-            pass
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id':upload_user_id,
+                'taskid':taskid,
+                'filepath':filepath,
+                'freqency':freqency,
+                'threshold': threshold,
+                'taskname': taskname}, id=taskid, trigger='interval', days=1)
+        if freqency == 'weekly':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'filepath': filepath,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname}, id=taskid, trigger='interval', weeks=1)
+        if freqency == 'monthly':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'filepath': filepath,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname}, id=taskid, trigger='interval', days=30)
 
     #status
 

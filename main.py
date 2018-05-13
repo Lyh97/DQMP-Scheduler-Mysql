@@ -23,6 +23,8 @@ DATABASE = './db/taskDB.db'
 #         g.db.commit()
 #         g.db.close()
 
+def interval_job():
+    print('date job')
 
 app.register_blueprint(task, url_prefix='/task')
 

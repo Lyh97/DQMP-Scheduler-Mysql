@@ -1,16 +1,20 @@
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 import sys
 
+from datetime import date
+
+
 class Config(object):
-    # JOBS = [
-    #     {
-    #         'id': 'job5',
-    #         'func': 'main:interval_job',
-    #         'args': (),
-    #         'trigger': 'interval',
-    #         'seconds': 10
-    #     }
-    # ]
+    JOBS = [
+        {
+            'id': 'job1',
+            'func': 'main:interval_job',
+            'args': (),
+            'trigger': 'date',
+            'run_date': date(2018, 5, 12),
+            'misfire_grace_time': 2
+        }
+    ]
 
     SCHEDULER_API_ENABLED = True
 
