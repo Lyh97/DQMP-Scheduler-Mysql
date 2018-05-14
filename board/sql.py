@@ -31,5 +31,41 @@ query = {
       where status=0 AND b.result_time = monthlylog.result_time ),0) as Totalnumberoferrortasks
     FROM monthlylog
     GROUP BY result_time
+    ''',
+    'category_select_daily': '''
+    select result_time as Statistictime ,
+       ifnull((select COUNT(taskid)
+       FROM dailylog a
+       WHERE a.result_time = dailylog.result_time AND category = ?),0) as Totalnumberoftasks,
+       ifnull((select COUNT(taskid)
+       FROM dailylog b
+       where status=0 AND b.result_time = dailylog.result_time AND category = ?),0) as Totalnumberoferrortasks
+    FROM dailylog
+    WHERE category = ?
+    GROUP BY result_time
+    ''',
+    'category_select_weekly': '''
+    select result_time as Statistictime ,
+      ifnull((select COUNT(taskid)
+      FROM weeklylog a
+      WHERE a.result_time = weeklylog.result_time AND category = ?),0) as Totalnumberoftasks,
+      ifnull((select COUNT(taskid)
+      FROM weeklylog b
+      where status=0 AND b.result_time = weeklylog.result_time AND category = ?),0) as Totalnumberoferrortasks
+    FROM weeklylog
+    WHERE category = ?
+    GROUP BY result_time
+    ''',
+    'category_monthly_list': '''
+    select result_time as Statistictime ,
+      ifnull((select COUNT(taskid)
+      FROM monthlylog a
+      WHERE a.result_time = monthlylog.result_time AND category = ?),0) as Totalnumberoftasks,
+      ifnull((select COUNT(taskid)
+      FROM monthlylog b
+      where status=0 AND b.result_time = monthlylog.result_time AND category = ?),0) as Totalnumberoferrortasks
+    FROM monthlylog
+    WHERE category = ?
+    GROUP BY result_time
     '''
 }

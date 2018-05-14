@@ -16,7 +16,7 @@ def filtrateSelect():
     freqency = request.form.get('freqency')
     enabled = request.form.get('enabled')
     category = request.form.get('category')
-    sql = "SELECT * ,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid) as totalrun,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid And a.status = 0) as totalfails From task WHERE owner = 'Account'"
+    sql = "SELECT * ,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid) as totalrun,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid And a.status = 0) as totalfails From task WHERE taskid is not null"
 
     if freqency:
         sql += " AND freqency = '" + freqency + "'"
