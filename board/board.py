@@ -58,11 +58,31 @@ def selectMonthlyByUserId():
         monthly_data.append(monthlyList[i]['Totalnumberoftasks'])
         monthly_err.append(monthlyList[i]['Totalnumberoferrortasks'])
 
-    weeklyLists = []
-    weeklyLists.append(monthly_date_list)
-    weeklyLists.append(monthly_data)
-    weeklyLists.append(monthly_err)
-    return jsonify({'code': 200, 'meaasge': 'ok', 'data': {'tabData': monthlyList, 'chartData': weeklyLists}})
+    monthlyLists = []
+    monthlyLists.append(monthly_date_list)
+    monthlyLists.append(monthly_data)
+    monthlyLists.append(monthly_err)
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': {'tabData': monthlyList, 'chartData': monthlyLists}})
+
+
+# 查询daily错误数据
+@board.route('/daily_fail_list', methods=['GET','POST'])
+def selectFailDailyList():
+    dailyList = query_db_outside(query['select_fail_daily'])
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': dailyList})
+
+# 查询weekly数据
+@board.route('/weekly_fail_list', methods=['GET','POST'])
+def selectFailWeekly():
+    weeklyList = query_db_outside(query['select_fail_weekly'])
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': weeklyList})
+
+
+# 查询monthly数据
+@board.route('/monthly_fail_list', methods=['GET','POST'])
+def selectFailMonthly():
+    monthlyList = query_db_outside(query['monthly_fail_list'])
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': monthlyList})
 
 
 
@@ -110,6 +130,7 @@ def selectWeeklyByCategory():
     weeklyLists.append(weekly_err)
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': {'tabData': weeklyList, 'chartData': weeklyLists}})
 
+
 # 查询特定类别的monthly数据
 @board.route('/category_monthly_list', methods=['GET','POST'])
 def selectMonthlyByCategory():
@@ -131,3 +152,25 @@ def selectMonthlyByCategory():
     weeklyLists.append(monthly_data)
     weeklyLists.append(monthly_err)
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': {'tabData': monthlyList, 'chartData': weeklyLists}})
+
+# 查询daily错误数据
+@board.route('/category_daily_fail_list', methods=['GET','POST'])
+def selectCategoryFailDailyList():
+    category = request.args.get('category')
+    dailyList = query_db_outside(query['category_select_fail_daily'],(category,category,))
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': dailyList})
+
+# 查询weekly数据
+@board.route('/category_weekly_fail_list', methods=['GET','POST'])
+def selectCategoryFailWeekly():
+    category = request.args.get('category')
+    weeklyList = query_db_outside(query['category_select_fail_weekly'],(category,category,))
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': weeklyList})
+
+
+# 查询monthly数据
+@board.route('/category_monthly_fail_list', methods=['GET','POST'])
+def selectCategoryFailMonthly():
+    category = request.args.get('category')
+    monthlyList = query_db_outside(query['category_monthly_fail_list'],(category,category,))
+    return jsonify({'code': 200, 'meaasge': 'ok', 'data': monthlyList})

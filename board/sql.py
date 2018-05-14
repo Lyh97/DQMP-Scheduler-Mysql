@@ -32,6 +32,21 @@ query = {
     FROM monthlylog
     GROUP BY result_time
     ''',
+    'select_fail_daily': '''
+    select *
+    FROM dailylog
+    where result_time in (select max(result_time) from dailylog)
+    ''',
+    'select_fail_weekly': '''
+    select *
+    FROM weeklylog
+    where result_time in (select max(result_time) from weeklylog)
+    ''',
+    'monthly_fail_list': '''
+    select *
+    FROM monthlylog
+    where result_time in (select max(result_time) from monthlylog)
+    ''',
     'category_select_daily': '''
     select result_time as Statistictime ,
        ifnull((select COUNT(taskid)
@@ -67,5 +82,20 @@ query = {
     FROM monthlylog
     WHERE category = ?
     GROUP BY result_time
+    ''',
+    'category_select_fail_daily': '''
+    select *
+    FROM dailylog
+    where result_time in (select max(result_time) from dailylog where category = ?) AND category = ?
+    ''',
+    'category_select_fail_weekly': '''
+    select *
+    FROM weeklylog
+    where result_time in (select max(result_time) from weeklylog where category = ?) AND category = ?
+    ''',
+    'category_monthly_fail_list': '''
+    select *
+    FROM monthlylog
+    where result_time in (select max(result_time) from monthlylog where category = ?) AND category = ?
     '''
 }
