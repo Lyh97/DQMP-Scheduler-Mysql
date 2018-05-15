@@ -7,12 +7,12 @@ from datetime import date
 class Config(object):
     JOBS = [
         {
-            'id': 'job1',
+            'id': 'jobmiss',
             'func': 'main:interval_job',
             'args': (),
             'trigger': 'date',
-            'run_date': date(2018, 5, 12),
-            'misfire_grace_time': 2
+            'run_date': date(2018, 5, 13),
+            'misfire_grace_time': 60 * 60 * 24
         }
     ]
 
