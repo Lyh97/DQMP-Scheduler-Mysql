@@ -5,16 +5,16 @@ from datetime import date
 
 
 class Config(object):
-    JOBS = [
-        {
-            'id': 'jobmiss',
-            'func': 'main:interval_job',
-            'args': (),
-            'trigger': 'date',
-            'run_date': date(2018, 5, 13),
-            'misfire_grace_time': 60 * 60 * 24
-        }
-    ]
+    # JOBS = [
+    #     {
+    #         'id': 'jobmiss',
+    #         'func': 'main:interval_job',
+    #         'args': (),
+    #         'trigger': 'date',
+    #         'run_date': date(2018, 5, 13),
+    #         'misfire_grace_time': 60 * 60 * 24
+    #     }
+    # ]
 
     SCHEDULER_API_ENABLED = True
 
