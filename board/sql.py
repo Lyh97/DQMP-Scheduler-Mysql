@@ -8,8 +8,7 @@ query = {
        FROM dailylog b
        where status='Fail' AND b.result_time = dailylog.result_time ),0) as Totalnumberoferrortasks
     FROM dailylog
-    GROUP BY result_time 
-    ORDER BY result_time DESC
+    GROUP BY result_time
     ''',
     'select_weekly': '''
     select result_time as Statistictime ,
@@ -21,7 +20,6 @@ query = {
       where status='Fail' AND b.result_time = weeklylog.result_time ),0) as Totalnumberoferrortasks
     FROM weeklylog
     GROUP BY result_time
-    ORDER BY result_time DESC
     ''',
     'monthly_list': '''
     select result_time as Statistictime ,
@@ -33,7 +31,6 @@ query = {
       where status='Fail' AND b.result_time = monthlylog.result_time ),0) as Totalnumberoferrortasks
     FROM monthlylog
     GROUP BY result_time
-    ORDER BY result_time DESC
     ''',
     'select_fail_daily': '''
     select *
