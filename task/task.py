@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from db.query_db import query_db_outside
 from .sql import query
-# from SqlTask.SqlTask import run
+from SqlTask.SqlTask import run
 import time
 import __main__
 
@@ -39,34 +39,34 @@ def add_task():
                                        description, tag, enabled, freqency,
                                        task_type, threshold, filepath, upload_time,
                                        update_time, upload_user_id, taskname))
-    # if run_now:
-    #     run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency, threshold=threshold, taskname=taskname)
-    #
-    # if enabled:
-    #     if freqency == 'daily':
-    #         __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id':upload_user_id,
-    #             'taskid':taskid,
-    #             'filepath':filepath,
-    #             'freqency':freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname}, id=taskid, trigger='interval', days=1)
-    #     if freqency == 'weekly':
-    #         __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id': upload_user_id,
-    #             'taskid': taskid,
-    #             'filepath': filepath,
-    #             'freqency': freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname}, id=taskid, trigger='interval', weeks=1)
-    #     if freqency == 'monthly':
-    #         __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id': upload_user_id,
-    #             'taskid': taskid,
-    #             'filepath': filepath,
-    #             'freqency': freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname}, id=taskid, trigger='interval', days=30)
+    if run_now:
+        run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency, threshold=threshold, taskname=taskname)
+
+    if enabled:
+        if freqency == 'daily':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id':upload_user_id,
+                'taskid':taskid,
+                'filepath':filepath,
+                'freqency':freqency,
+                'threshold': threshold,
+                'taskname': taskname}, id=taskid, trigger='interval', days=1)
+        if freqency == 'weekly':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'filepath': filepath,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname}, id=taskid, trigger='interval', weeks=1)
+        if freqency == 'monthly':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'filepath': filepath,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname}, id=taskid, trigger='interval', days=30)
 
     #status
 
