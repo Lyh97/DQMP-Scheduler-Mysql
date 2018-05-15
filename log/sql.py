@@ -9,7 +9,7 @@ query = {
          WHERE a.taskid = task.taskid) as totalrun,
        (select COUNT(taskid)
          from result_tab a
-         WHERE a.taskid = task.taskid And a.status = 0) as totalfails
+         WHERE a.taskid = task.taskid And a.status = 'Fail') as totalfails
       From task
       ORDER BY last_runtime DESC
     ''',
@@ -30,6 +30,27 @@ query = {
       SET comments = ?
       WHERE
       id = ?
+    ''',
+    'SelectDailyErrorList':'''
+      SELECT * 
+      FROM task 
+      WHERE taskid in (SELECT taskid 
+      from dailylog
+      WHERE result_time = ? AND status = 'Fail')
+    ''',
+    'SelectWeeklyErrorList':'''
+      SELECT * 
+      FROM task 
+      WHERE taskid in (SELECT taskid 
+      from weeklylog
+      WHERE result_time = ? AND status = 'Fail')
+    ''',
+    'SelectMonthlyErrorList':'''
+      SELECT * 
+      FROM task 
+      WHERE taskid in (SELECT taskid 
+      from monthlylog
+      WHERE result_time = ? AND status = 'Fail')
     '''
 }
 

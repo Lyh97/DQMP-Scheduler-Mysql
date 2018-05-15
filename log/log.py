@@ -63,3 +63,17 @@ def selectHistoryById():
     taskList = query_db_outside(query['updateComment'], (comments,id,))
 
     return jsonify({'code': 200, 'message': 'ok', 'data': ''})
+
+#查询errortask 通过时间
+@log.route('/error_list',methods=['GET','POST'])
+def selectErrorTaskByResulttime():
+    date = request.form.get('date')
+    fre = request.form.get('fre')
+    taskList = []
+    if fre == 'daily':
+      taskList = query_db_outside(query['SelectDailyErrorList'], (date,))
+    if fre == 'weekly':
+      taskList = query_db_outside(query['SelectWeeklyErrorList'], (date,))
+    if fre == 'monthly':
+      taskList = query_db_outside(query['SelectMonthlyErrorList'], (date,))
+    return jsonify({'code': 200, 'message': 'ok', 'data': taskList})

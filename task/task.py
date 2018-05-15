@@ -15,9 +15,7 @@ def add_task():
     # scheduler.add_job(func=interval_job, id='123', trigger='interval', seconds=5)
     # sqlTask = SqlTask.SqlTask()
     # scheduler.add_job(func=interval_job, id='sqlaa', trigger='interval', seconds=100)
-    print(request.form)
     taskid = request.form.get('taskid')
-    print(taskid)
     category = request.form.get('category')
     owner = request.form.get('owner')
     email = request.form.get('email')
@@ -50,7 +48,7 @@ def add_task():
                 'filepath':filepath,
                 'freqency':freqency,
                 'threshold': threshold,
-                'taskname': taskname}, id=taskid, trigger='interval', days=1)
+                'taskname': taskname}, id=taskid, trigger='interval', days=1, name=taskname)
         if freqency == 'weekly':
             __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
@@ -58,7 +56,7 @@ def add_task():
                 'filepath': filepath,
                 'freqency': freqency,
                 'threshold': threshold,
-                'taskname': taskname}, id=taskid, trigger='interval', weeks=1)
+                'taskname': taskname}, id=taskid, trigger='interval', weeks=1, name=taskname)
         if freqency == 'monthly':
             __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
@@ -66,7 +64,7 @@ def add_task():
                 'filepath': filepath,
                 'freqency': freqency,
                 'threshold': threshold,
-                'taskname': taskname}, id=taskid, trigger='interval', days=30)
+                'taskname': taskname}, id=taskid, trigger='interval', days=30, name=taskname)
 
     #status
 

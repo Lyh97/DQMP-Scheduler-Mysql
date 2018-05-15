@@ -25,15 +25,15 @@ def run(user_id, taskid, filepath, freqency, threshold, taskname):
     print(type(result))
     result_time = time.strftime('%Y-%m-%d', time.localtime())
     insert_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-    # if freqency == 'daily':
-    #     daily_status = 1
-    #     query_db_outside(query['add_dailylog'], (taskid, result_count, result_time, 1, user_id, insert_time))
-    #
-    # if freqency == 'weekly':
-    #     query_db_outside(query['add_dailylog'], (taskid, result_count, result_time, 1, user_id, insert_time))
-    #
-    # if freqency == 'monthly':
-    #     query_db_outside(query['add_dailylog'], (taskid, result_count, result_time, 1, user_id, insert_time))
+    if freqency == 'daily':
+        daily_status = 1
+        query_db_outside(query['add_dailylog'], (taskid, result_count, result_time, 1, user_id, insert_time))
+
+    if freqency == 'weekly':
+        query_db_outside(query['add_dailylog'], (taskid, result_count, result_time, 1, user_id, insert_time))
+
+    if freqency == 'monthly':
+        query_db_outside(query['add_dailylog'], (taskid, result_count, result_time, 1, user_id, insert_time))
 
     table = {'daily': 'add_dailylog',
              'weekly': 'add_dailylog',
