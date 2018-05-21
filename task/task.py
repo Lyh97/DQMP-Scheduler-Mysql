@@ -5,8 +5,6 @@ from SqlTask.SqlTask import run
 import time
 import __main__
 
-
-
 task = Blueprint('task', __name__)
 
 @task.route('/add/', methods=['GET', 'POST'])
