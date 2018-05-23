@@ -32,6 +32,44 @@ query = {
     FROM monthlylog
     GROUP BY result_time
     ''',
+
+    'select_daily_desc': '''
+    select result_time as Statistictime ,
+       ifnull((select COUNT(taskid)
+       FROM dailylog a
+       WHERE a.result_time = dailylog.result_time),0) as Totalnumberoftasks,
+       ifnull((select COUNT(taskid)
+       FROM dailylog b
+       where status='Fail' AND b.result_time = dailylog.result_time ),0) as Totalnumberoferrortasks
+    FROM dailylog
+    GROUP BY result_time
+    ORDER BY result_time DESC
+    ''',
+    'select_weekly_desc': '''
+    select result_time as Statistictime ,
+      ifnull((select COUNT(taskid)
+      FROM weeklylog a
+      WHERE a.result_time = weeklylog.result_time),0) as Totalnumberoftasks,
+      ifnull((select COUNT(taskid)
+      FROM weeklylog b
+      where status='Fail' AND b.result_time = weeklylog.result_time ),0) as Totalnumberoferrortasks
+    FROM weeklylog
+    GROUP BY result_time
+    ORDER BY result_time DESC
+    ''',
+    'monthly_list_desc': '''
+    select result_time as Statistictime ,
+      ifnull((select COUNT(taskid)
+      FROM monthlylog a
+      WHERE a.result_time = monthlylog.result_time),0) as Totalnumberoftasks,
+      ifnull((select COUNT(taskid)
+      FROM monthlylog b
+      where status='Fail' AND b.result_time = monthlylog.result_time ),0) as Totalnumberoferrortasks
+    FROM monthlylog
+    GROUP BY result_time
+    ORDER BY result_time DESC
+    ''',
+
     'select_fail_daily': '''
     select *
     FROM dailylog
@@ -106,5 +144,14 @@ query = {
     FROM monthlylog
     where result_time in (select max(result_time) from monthlylog where category = ?) AND category = ?
     ORDER BY result_time DESC 
+    ''',
+    'select_being_performed':'''
+    select *
+    FROM being_performed
+    WHERE status = '1'
+    ''',
+    'select_execution_results':'''
+    select *
+    FROM execution_results
     '''
 }

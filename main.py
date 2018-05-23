@@ -7,7 +7,7 @@ from file.file import file
 from board.board import board
 from log.log import log
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 scheduler = APScheduler()
 
 DATABASE = './db/taskDB.db'
@@ -25,6 +25,10 @@ DATABASE = './db/taskDB.db'
 
 def interval_job():
     print('date job')
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 app.register_blueprint(task, url_prefix='/task')
 
