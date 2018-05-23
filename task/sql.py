@@ -11,6 +11,17 @@ query = {
                       ?, ?, ?, ?,
                       ?, ?, ?, ?,
                       ?, ?, ?)
+    ''',
+    'update_task': '''
+    UPDATE task
+    SET category=?, owner=?, email=?, description=?, tag=?, freqency=?,
+    task_type=?, threshold=?, filepath=?, update_time=?, upload_user_id=?, taskname=?
+    WHERE taskid=?
+    ''',
+    'remove_task': '''
+    UPDATE task
+    SET remove=1
+    WHERE taskid=?
     '''
 }
 

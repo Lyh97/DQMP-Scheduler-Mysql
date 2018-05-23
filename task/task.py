@@ -9,12 +9,9 @@ import __main__
 
 task = Blueprint('task', __name__)
 
+
 @task.route('/add/', methods=['GET', 'POST'])
 def add_task():
-    # scheduler.add_job(interval_job, trigger='interval', seconds=5, id='interval_id2')
-    # scheduler.add_job(func=interval_job, id='123', trigger='interval', seconds=5)
-    # sqlTask = SqlTask.SqlTask()
-    # scheduler.add_job(func=interval_job, id='sqlaa', trigger='interval', seconds=100)
     taskid = request.form.get('taskid')
     category = request.form.get('category')
     owner = request.form.get('owner')
@@ -33,7 +30,7 @@ def add_task():
     upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
     update_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
-    cur = query_db_outside(query['add_task'], (taskid, category, owner, email,
+    query_db_outside(query['add_task'], (taskid, category, owner, email,
                                        description, tag, enabled, freqency,
                                        task_type, threshold, filepath, upload_time,
                                        update_time, upload_user_id, taskname))
@@ -65,8 +62,63 @@ def add_task():
                 'freqency': freqency,
                 'threshold': threshold,
                 'taskname': taskname}, id=taskid, trigger='interval', days=30, name=taskname)
-
     #status
-
-
     return jsonify({'code': 200 })
+
+
+@task.route('/update/', methods=['GET', 'POST'])
+def reschedule_task():
+    taskid = request.form.get('taskid')
+    category = request.form.get('category')
+    owner = request.form.get('owner')
+    email = request.form.get('email')
+    description = request.form.get('description')  # The description of the task
+    tag = request.form.get('tag')  # The tag of the task
+    freqency = request.form.get('freqency')
+    task_type = request.form.get('task_type')
+    threshold = int(request.form.get('threshold'))  # The threshold of result for sending the notice to owner
+    filepath = request.form.get('file_path')  # The path of the task need to run
+    upload_user_id = int(request.form.get('upload_user_id'))
+    taskname = request.form.get('taskname')
+
+    update_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+
+    query_db_outside(query['update_task'], (category, owner, email,
+                                       description, tag, freqency,
+                                       task_type, threshold, filepath,
+                                       update_time, upload_user_id, taskname, taskid))
+
+    if freqency == 'daily':
+        __main__.scheduler.reschedule_job(func=run, kwargs={
+            'user_id': upload_user_id,
+            'taskid': taskid,
+            'filepath': filepath,
+            'freqency': freqency,
+            'threshold': threshold,
+            'taskname': taskname}, id=taskid, trigger='interval', days=1, name=taskname)
+    if freqency == 'weekly':
+        __main__.scheduler.add_job(func=run, kwargs={
+            'user_id': upload_user_id,
+            'taskid': taskid,
+            'filepath': filepath,
+            'freqency': freqency,
+            'threshold': threshold,
+            'taskname': taskname}, id=taskid, trigger='interval', weeks=1, name=taskname)
+    if freqency == 'monthly':
+        __main__.scheduler.add_job(func=run, kwargs={
+            'user_id': upload_user_id,
+            'taskid': taskid,
+            'filepath': filepath,
+            'freqency': freqency,
+            'threshold': threshold,
+            'taskname': taskname}, id=taskid, trigger='interval', days=30, name=taskname)
+
+    return jsonify({'code': 200})
+
+
+@task.route('/delete/', methods=['GET', 'POST'])
+def delete_task():
+    taskid = request.form.get('taskid')
+    __main__.scheduler.remove_job(taskid)
+    query_db_outside(query['remove_task'], (1,))
+    return jsonify({'code': 200})
