@@ -11,6 +11,7 @@ query = {
          from result_tab a
          WHERE a.taskid = task.taskid And a.status = 'Fail') as totalfails
       From task
+      WHERE remove = 0
       ORDER BY last_runtime DESC
     ''',
     'select_task':'''
