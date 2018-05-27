@@ -16,6 +16,8 @@ class Config(object):
     #     }
     # ]
 
+    REDIS_URL = "redis://localhost:6379"
+
     SCHEDULER_API_ENABLED = True
 
     SCHEDULER_JOBSTORES = {

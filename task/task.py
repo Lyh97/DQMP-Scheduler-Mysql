@@ -1,6 +1,8 @@
 import datetime
 
 from flask import Blueprint, request, jsonify
+from redis import Redis
+
 from db.query_db import query_db_outside
 from .sql import query
 from SqlTask.SqlTask import run
@@ -9,7 +11,7 @@ import uuid
 import __main__
 
 task = Blueprint('task', __name__)
-
+redis = Redis()
 
 @task.route('/add/', methods=['GET', 'POST'])
 def add_task():
@@ -25,7 +27,7 @@ def add_task():
     threshold = int(request.form.get('threshold'))             # The threshold of result for sending the notice to owner
     filepath = request.form.get('file_path')              # The path of the task need to run
     run_now = eval(request.form.get('run_now'))           # just run now
-    upload_user_id = int(request.form.get('upload_user_id'))
+    upload_user_id = int(redis.get(request.form.get('upload_user_id')).decode())
     taskname = request.form.get('taskname')
 
     upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
