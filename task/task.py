@@ -41,10 +41,10 @@ def add_task():
     if run_now:
         # run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency, threshold=threshold, taskname=taskname)
         __main__.scheduler.add_job(func=run, kwargs={
-                'user_id':upload_user_id,
-                'taskid':taskid,
-                'filepath':filepath,
-                'freqency':freqency,
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'filepath': filepath,
+                'freqency': freqency,
                 'threshold': threshold,
                 'taskname': taskname}, id=str(uuid.uuid1()), trigger='date', name=taskname, misfire_grace_time=60 * 60 * 24,
                                    run_date=datetime.datetime.now() + datetime.timedelta(seconds=3))
@@ -137,3 +137,22 @@ def delete_task():
     __main__.scheduler.remove_job(taskid)
     query_db_outside(query['remove_task'], (taskid,))
     return jsonify({'code': 200})
+
+
+@task.route('/run/', methods=['GET', 'POST'])
+def run_task():
+    taskid = request.form.get('taskid')
+    freqency = request.form.get('freqency')
+    threshold = int(request.form.get('threshold'))  # The threshold of result for sending the notice to owner
+    filepath = request.form.get('file_path')  # The path of the task need to run
+    upload_user_id = int(redis.get(request.form.get('upload_user_id')).decode())
+    taskname = request.form.get('taskname')
+
+    __main__.scheduler.add_job(func=run, kwargs={
+        'user_id': upload_user_id,
+        'taskid': taskid,
+        'filepath': filepath,
+        'freqency': freqency,
+        'threshold': threshold,
+        'taskname': taskname}, id=str(uuid.uuid1()), trigger='date', name=taskname, misfire_grace_time=60 * 60 * 24,
+                               run_date=datetime.datetime.now() + datetime.timedelta(seconds=3))

@@ -20,5 +20,9 @@ query = {
     'add_resulttab': '''
     INSERT INTO result_tab (taskname, taskid, result, status, run_time, duration)
     VALUES (?, ?, ?, ?, ?, ?)
+    ''',
+    'tasklog':'''
+    INSERT INTO tasklog (taskname, taskid, status, description, insert_time)
+    VALUES (?, ?, ?, ?, ?)
     '''
 }
