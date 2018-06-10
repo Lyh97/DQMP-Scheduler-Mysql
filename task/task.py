@@ -27,6 +27,7 @@ def add_task():
     threshold = int(request.form.get('threshold'))             # The threshold of result for sending the notice to owner
     filepath = request.form.get('file_path')              # The path of the task need to run
     run_now = eval(request.form.get('run_now'))           # just run now
+    content = request.form.get('content')
     upload_user_id = int(redis.get(request.form.get('upload_user_id')).decode())
     taskname = request.form.get('taskname')
 
@@ -36,7 +37,7 @@ def add_task():
     query_db_outside(query['add_task'], (taskid, category, owner, email,
                                        description, tag, enabled, freqency,
                                        task_type, threshold, filepath, upload_time,
-                                       update_time, upload_user_id, taskname))
+                                       update_time,content, upload_user_id, taskname))
     if run_now:
         # run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency, threshold=threshold, taskname=taskname)
         __main__.scheduler.add_job(func=run, kwargs={

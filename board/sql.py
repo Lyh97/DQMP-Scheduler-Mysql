@@ -75,23 +75,37 @@ query = {
     GROUP BY result_time
     ORDER BY result_time DESC
     ''',
-
     'select_fail_daily': '''
-    select *
+    select category as Module, 
+    COUNT(id) as totalCount,
+    ifnull((select COUNT(id)
+      FROM dailylog a
+      WHERE a.result_time = dailylog.result_time AND a.status = 'Fail' AND a.category = dailylog.category),0) as failCount
     FROM dailylog
-    where result_time in (select max(result_time) from dailylog) AND user_id = ?
+    WHERE user_id = ? AND result_time = ?
+    Group BY category
     ORDER BY result_time DESC
     ''',
     'select_fail_weekly': '''
-    select *
+    select category as Module, 
+    COUNT(id) as totalCount,
+    ifnull((select COUNT(id)
+      FROM weeklylog a
+      WHERE a.result_time = weeklylog.result_time AND a.status = 'Fail' AND a.category = weeklylog.category),0) as failCount
     FROM weeklylog
-    where result_time in (select max(result_time) from weeklylog) AND user_id = ?
+    WHERE user_id = ? AND result_time = ?
+    Group BY category
     ORDER BY result_time DESC
     ''',
     'monthly_fail_list': '''
-    select *
+    select category as Module, 
+    COUNT(id) as totalCount,
+    ifnull((select COUNT(id)
+      FROM monthlylog a
+      WHERE a.result_time = monthlylog.result_time AND a.status = 'Fail' AND a.category = monthlylog.category),0) as failCount
     FROM monthlylog
-    where result_time in (select max(result_time) from monthlylog) AND user_id = ?
+    WHERE user_id = ? AND result_time = ?
+    Group BY category
     ORDER BY result_time DESC
     ''',
     'category_select_daily': '''
@@ -134,31 +148,31 @@ query = {
     ORDER BY result_time DESC
     ''',
     'category_select_fail_daily': '''
-    select *
+    select result_time,taskname,status,description
     FROM dailylog
-    where result_time in (select max(result_time) from dailylog where category = ?) AND category = ? AND user_id = ?
+    where result_time = ? AND category = ? AND user_id = ?
     ORDER BY result_time DESC 
     ''',
     'category_select_fail_weekly': '''
-    select *
+    select result_time,taskname,status,description
     FROM weeklylog
-    where result_time in (select max(result_time) from weeklylog where category = ?) AND category = ? AND user_id = ?
+    where result_time = ? AND category = ? AND user_id = ?
     ORDER BY result_time DESC 
     ''',
     'category_monthly_fail_list': '''
-    select *
+    select result_time,taskname,status,description
     FROM monthlylog
-    where result_time in (select max(result_time) from monthlylog where category = ?) AND category = ? AND user_id = ?
+    where result_time = ? AND category = ? AND user_id = ?
     ORDER BY result_time DESC 
     ''',
-    'select_being_performed':'''
+    'select_being_performed': '''
     select *
     FROM being_performed
-    WHERE status = '1' AND user_id = ?
+    WHERE status = '1'
     ''',
-    'select_execution_results':'''
+    'select_error_tasks': '''
     select *
-    FROM execution_results 
-    WHERE user_id = ?
+    FROM tasklog
+    WHERE status = '1' 
     '''
 }

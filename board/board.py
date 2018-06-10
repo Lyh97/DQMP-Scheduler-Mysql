@@ -3,6 +3,8 @@ from redis import Redis
 from db.query_db import query_db_outside
 from flask import Blueprint, jsonify, request
 from .sql import query
+import calendar
+import datetime
 board = Blueprint('board', __name__)
 redis = Redis()
 
@@ -46,26 +48,29 @@ def chartList(list):
     return Lists
 
 
-# 查询daily错误数据
+# 查询daily错误数据，按照模块分组，bashboard右上角
 @board.route('/daily_fail_list', methods=['GET','POST'])
 def selectFailDailyList():
     sessionid = request.args.get('sessionid')
     userid = redis.get(sessionid).decode()
-    dailyList = query_db_outside(query['select_fail_daily'],(userid,))
+    nowTime = datetime.datetime.now().strftime('%Y-%m-%d')
+    dailyList = query_db_outside(query['select_fail_daily'],(userid,nowTime,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': dailyList})
-# 查询weekly数据
+# 查询weekly数据，按照模块分组，bashboard右上角
 @board.route('/weekly_fail_list', methods=['GET','POST'])
 def selectFailWeekly():
     sessionid = request.args.get('sessionid')
     userid = redis.get(sessionid).decode()
-    weeklyList = query_db_outside(query['select_fail_weekly'],(userid,))
+    thisMonday = getThisMonday()
+    weeklyList = query_db_outside(query['select_fail_weekly'],(userid,thisMonday,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': weeklyList})
-# 查询monthly数据
+# 查询monthly数据，按照模块分组，bashboard右上角
 @board.route('/monthly_fail_list', methods=['GET','POST'])
 def selectFailMonthly():
     sessionid = request.args.get('sessionid')
     userid = redis.get(sessionid).decode()
-    monthlyList = query_db_outside(query['monthly_fail_list'],(userid,))
+    nowTime = datetime.datetime.now().strftime('%Y-%m')
+    monthlyList = query_db_outside(query['monthly_fail_list'],(userid,nowTime,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': monthlyList})
 
 
@@ -106,8 +111,8 @@ def selectCategoryFailDailyList():
     category = request.args.get('category')
     sessionid = request.args.get('sessionid')
     userid = redis.get(sessionid).decode()
-
-    dailyList = query_db_outside(query['category_select_fail_daily'],(category,category,userid,))
+    nowTime = datetime.datetime.now().strftime('%Y-%m-%d')
+    dailyList = query_db_outside(query['category_select_fail_daily'],(nowTime,category,userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': dailyList})
 # 查询weekly错误数据
 @board.route('/category_weekly_fail_list', methods=['GET','POST'])
@@ -115,8 +120,8 @@ def selectCategoryFailWeekly():
     category = request.args.get('category')
     sessionid = request.args.get('sessionid')
     userid = redis.get(sessionid).decode()
-
-    weeklyList = query_db_outside(query['category_select_fail_weekly'],(category,category,userid,))
+    thisMonday = getThisMonday()
+    weeklyList = query_db_outside(query['category_select_fail_weekly'],(thisMonday,category,userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': weeklyList})
 # 查询monthly错误数据
 @board.route('/category_monthly_fail_list', methods=['GET','POST'])
@@ -124,8 +129,8 @@ def selectCategoryFailMonthly():
     category = request.args.get('category')
     sessionid = request.args.get('sessionid')
     userid = redis.get(sessionid).decode()
-
-    monthlyList = query_db_outside(query['category_monthly_fail_list'],(category,category,userid,))
+    nowTime = datetime.datetime.now().strftime('%Y-%m')
+    monthlyList = query_db_outside(query['category_monthly_fail_list'],(nowTime,category,userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': monthlyList})
 
 
@@ -135,13 +140,21 @@ def selectBeingPerformed():
     sessionid = request.args.get('sessionid')
     userid = redis.get(sessionid).decode()
 
-    list = query_db_outside(query['select_being_performed'],(userid,))
+    list = query_db_outside(query['select_being_performed'])
     return jsonify({'code':200,'message':'ok','data':list})
-#查询execution results数据
-@board.route('/execution_results',methods=['GET','POST'])
+#查询error_task数据
+@board.route('/error_tasks',methods=['GET','POST'])
 def selectExecutionResults():
-    sessionid = request.args.get('sessionid')
-    userid = redis.get(sessionid).decode()
 
-    list = query_db_outside(query['select_execution_results'],(userid,))
+    list = query_db_outside(query['select_error_tasks'])
     return jsonify({'code':200,'message':'ok','data':list})
+
+#获取本周一日期 年-月-日
+def getThisMonday():
+    today = datetime.date.today()
+    oneday = datetime.timedelta(days = 1)
+    m1 = calendar.MONDAY
+    while today.weekday() != m1:
+        today -= oneday
+    nextMonday = today.strftime('%Y-%m-%d')
+    return nextMonday

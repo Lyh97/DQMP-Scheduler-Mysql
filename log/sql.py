@@ -25,7 +25,7 @@ query = {
       FROM result_tab
       WHERE
       taskid = ?
-      ORDER BY run_time ASC
+      ORDER BY run_time DESC
     ''',
     'updateComment': '''
       UPDATE result_tab

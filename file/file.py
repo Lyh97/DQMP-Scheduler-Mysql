@@ -28,12 +28,22 @@ def uploadfile():
     if 'file' not in request.files:
         return redirect(request.url)
     file = request.files['file']
+    print(file)
     if file.filename == '':
         return redirect(request.url)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
-        return jsonify({'data': '/static/uploads/'+filename})
+        file_object = open(sys.path[0]+'/static/uploads/'+filename)
+        try:
+            all_the_text = file_object.read()
+            all_the_text_sql = all_the_text.replace('\n', ' ')
+            all_the_text_temp = all_the_text.replace(' ', '')
+            if all_the_text_temp.find("SELECT*") != -1 or all_the_text_temp.find("DELETEFROM") != -1:
+                return jsonify({'code':300,'message':'There are illegal statements in the SQL file','data': ''})
+        finally:
+            file_object.close()
+        return jsonify({'code':200,'data': '/static/uploads/'+filename,'sql':all_the_text_sql})
   return 'fail';
 
 # 删除上传的任务文件
