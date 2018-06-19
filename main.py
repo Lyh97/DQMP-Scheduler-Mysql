@@ -56,6 +56,7 @@ def Login():
 
 @app.route('/')
 def index():
+
     return app.send_static_file('index.html')
 
 app.register_blueprint(task, url_prefix='/task')
@@ -68,12 +69,12 @@ app.register_blueprint(log, url_prefix='/log')
 
 app.register_blueprint(user, url_prefix='/user')
 
-if __name__ == '__main__':
+app.config.from_object(Config())
+# it is also possible to enable the API directly
+scheduler.api_enabled = True
+scheduler.init_app(app)
+scheduler.start()
+CORS(app)
 
-    app.config.from_object(Config())
-    # it is also possible to enable the API directly
-    scheduler.api_enabled = True
-    scheduler.init_app(app)
-    scheduler.start()
-    CORS(app)
+if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, threaded=True)
