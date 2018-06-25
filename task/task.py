@@ -15,7 +15,7 @@ redis = Redis()
 
 @task.route('/add/', methods=['GET', 'POST'])
 def add_task():
-    taskid = request.form.get('taskid')
+    taskid = str(uuid.uuid1()) #request.form.get('taskid')
     category = request.form.get('category')
     owner = request.form.get('owner')
     email = request.form.get('email')
@@ -42,7 +42,7 @@ def add_task():
         __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
                 'taskid': taskid,
-                'filepath': filepath,
+                'content': content,
                 'freqency': freqency,
                 'threshold': threshold,
                 'taskname': taskname}, id=str(uuid.uuid1()), trigger='date', name=taskname, misfire_grace_time=60 * 60 * 24,
@@ -53,7 +53,7 @@ def add_task():
             __main__.scheduler.add_job(func=run, kwargs={
                 'user_id':upload_user_id,
                 'taskid':taskid,
-                'filepath':filepath,
+                'content':content,
                 'freqency':freqency,
                 'threshold': threshold,
                 'taskname': taskname}, id=taskid, trigger='interval', days=1, name=taskname, misfire_grace_time=60 * 60 * 24)
@@ -61,7 +61,7 @@ def add_task():
             __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
                 'taskid': taskid,
-                'filepath': filepath,
+                'content': content,
                 'freqency': freqency,
                 'threshold': threshold,
                 'taskname': taskname}, id=taskid, trigger='interval', weeks=1, name=taskname, misfire_grace_time=60 * 60 * 24)
@@ -69,14 +69,14 @@ def add_task():
             __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
                 'taskid': taskid,
-                'filepath': filepath,
+                'content': content,
                 'freqency': freqency,
                 'threshold': threshold,
                 'taskname': taskname}, id=taskid, trigger='interval', days=30, name=taskname, misfire_grace_time=60 * 60 * 24)
     #status
     return jsonify({'code': 200 })
 
-
+#在task被更新后，时间会被重新安排，错过一次执行，update不应该影响时间
 @task.route('/update/', methods=['GET', 'POST'])
 def reschedule_task():
     taskid = request.form.get('taskid')
@@ -88,7 +88,8 @@ def reschedule_task():
     freqency = request.form.get('freqency')
     task_type = request.form.get('task_type')
     threshold = int(request.form.get('threshold'))  # The threshold of result for sending the notice to owner
-    filepath = request.form.get('file_path')  # The path of the task need to run
+    #filepath = request.form.get('file_path')  # The path of the task need to run
+    content = request.form.get('content')
     upload_user_id = int(request.form.get('upload_user_id'))
     taskname = request.form.get('taskname')
     enabled = eval(request.form.get('enabled'))
@@ -97,7 +98,7 @@ def reschedule_task():
 
     query_db_outside(query['update_task'], (category, owner, email,
                                        description, tag, freqency,
-                                       task_type, threshold, filepath,
+                                       task_type, threshold, content,
                                        update_time, upload_user_id, taskname, taskid))
     if enabled:
         __main__.scheduler.remove_job(taskid)
@@ -106,7 +107,7 @@ def reschedule_task():
             __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
                 'taskid': taskid,
-                'filepath': filepath,
+                'content': content,
                 'freqency': freqency,
                 'threshold': threshold,
                 'taskname': taskname}, id=taskid, trigger='interval', days=1, name=taskname, misfire_grace_time=60 * 60 * 24)
@@ -114,7 +115,7 @@ def reschedule_task():
             __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
                 'taskid': taskid,
-                'filepath': filepath,
+                'content': content,
                 'freqency': freqency,
                 'threshold': threshold,
                 'taskname': taskname}, id=taskid, trigger='interval', weeks=1, name=taskname, misfire_grace_time=60 * 60 * 24)
@@ -122,7 +123,7 @@ def reschedule_task():
             __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
                 'taskid': taskid,
-                'filepath': filepath,
+                'content': content,
                 'freqency': freqency,
                 'threshold': threshold,
                 'taskname': taskname}, id=taskid, trigger='interval', days=30, name=taskname, misfire_grace_time=60 * 60 * 24)
@@ -143,16 +144,17 @@ def run_task():
     taskid = request.form.get('taskid')
     freqency = request.form.get('freqency')
     threshold = int(request.form.get('threshold'))  # The threshold of result for sending the notice to owner
-    filepath = request.form.get('filepath')  # The path of the task need to run
+    content = request.form.get('content')  # The path of the task need to run
     upload_user_id = int(request.form.get('upload_user_id'))
     taskname = request.form.get('taskname')
 
     __main__.scheduler.add_job(func=run, kwargs={
         'user_id': upload_user_id,
         'taskid': taskid,
-        'filepath': filepath,
+        'content': content,
         'freqency': freqency,
         'threshold': threshold,
         'taskname': taskname}, id=str(uuid.uuid1()), trigger='date', name=taskname, misfire_grace_time=60 * 60 * 24,
                                run_date=datetime.datetime.now() + datetime.timedelta(seconds=3))
+
     return jsonify({'code': 200, 'meaasge': 'Task Start', 'data': ''})

@@ -15,7 +15,7 @@ query = {
     'update_task': '''
     UPDATE task
     SET category=?, owner=?, email=?, description=?, tag=?, freqency=?,
-    task_type=?, threshold=?, filepath=?, update_time=?, upload_user_id=?, taskname=?
+    task_type=?, threshold=?, content=?, update_time=?, upload_user_id=?, taskname=?
     WHERE taskid=?
     ''',
     'remove_task': '''

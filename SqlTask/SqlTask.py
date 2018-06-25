@@ -7,7 +7,7 @@ import time
 from functools import wraps
 
 
-def run(user_id, taskid, filepath, freqency, threshold, taskname):
+def run(user_id, taskid, content, freqency, threshold, taskname):
     print('\033[4;32m' + 'Start to running <' + taskname + '> [id:' + taskid + ']' + '\033[0m')
     config = open(sys.path[0] + '/SqlTask/config.json', 'r')
     config = config.read()
@@ -18,8 +18,9 @@ def run(user_id, taskid, filepath, freqency, threshold, taskname):
         config['database'], config['hostname'], config['port'], config['user_id'], config['password'])
     try:
         conn = ibm_db.connect(dns, "", "")
-        sqlfile = open(sys.path[0] + filepath, 'r')
-        sql = sqlfile.read()
+        #sqlfile = open(sys.path[0] + filepath, 'r')
+        #sql = sqlfile.read()
+        sql = content
         stmt = ibm_db.exec_immediate(conn, sql)
         result = ibm_db.fetch_assoc(stmt)
     except:
