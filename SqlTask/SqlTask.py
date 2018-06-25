@@ -7,7 +7,7 @@ import time
 from functools import wraps
 
 
-def run(user_id, taskid, content, freqency, threshold, taskname):
+def run(user_id, taskid, content, freqency, threshold, taskname, category, description):
     print('\033[4;32m' + 'Start to running <' + taskname + '> [id:' + taskid + ']' + '\033[0m')
     config = open(sys.path[0] + '/SqlTask/config.json', 'r')
     config = config.read()
@@ -18,8 +18,6 @@ def run(user_id, taskid, content, freqency, threshold, taskname):
         config['database'], config['hostname'], config['port'], config['user_id'], config['password'])
     try:
         conn = ibm_db.connect(dns, "", "")
-        #sqlfile = open(sys.path[0] + filepath, 'r')
-        #sql = sqlfile.read()
         sql = content
         stmt = ibm_db.exec_immediate(conn, sql)
         result = ibm_db.fetch_assoc(stmt)
@@ -43,5 +41,5 @@ def run(user_id, taskid, content, freqency, threshold, taskname):
         resulttab_status = 'Success'
         print('\033[1;30;47m<' + taskname + '> [id:' + taskid + ']' + 'success!' + '\033[0m')
 
-    query_db_outside(query[table[freqency]], (taskid, result_count, result_time, daily_status, user_id, insert_time, taskname))
+    query_db_outside(query[table[freqency]], (taskid, result_count, result_time, daily_status, user_id, insert_time, taskname, category, description))
     query_db_outside(query['add_resulttab'], (taskname, taskid, result_count, resulttab_status, insert_time, '10s'))
