@@ -11,7 +11,7 @@ redis = Redis()
 @log.route('/list',methods=['POST','GET'])
 def selectTaskListByUserId():
     sessionid = request.args.get('sessionid')
-    userid = redis.get(sessionid).decode()
+    userid = getuserid(sessionid)
 
     taskList = query_db_outside(query['select_tasklist'],(userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': taskList})
@@ -22,38 +22,30 @@ def filtrateSelect():
     freqency = request.form.get('freqency')
     enabled = request.form.get('enabled')
     category = request.form.get('category')
-    sessionid = request.form.get('sessionid')
-    userid = redis.get(sessionid).decode()
+    sessionid = request.args.get('sessionid')
+    userid = getuserid(sessionid)
+    if freqency == '':
+        freqency = None
+    if enabled == '':
+        enabled = None
+    if category == '':
+        category = None
 
-    sql = "SELECT * ,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid) as totalrun,(select COUNT(taskid) from result_tab a WHERE a.taskid = task.taskid And a.status = 0) as totalfails From task WHERE upload_user_id = " + userid
-
-    if freqency:
-        sql += " AND freqency = '" + freqency + "'"
-    if enabled:
-        sql += " AND enabled = '" + enabled + "'"
-    if category:
-        sql += " AND category = '" + category + "'"
-
-    taskList = query_db_outside(sql)
-
+    taskList = query_db_outside(query['filtrateSelect'], (userid,freqency,enabled,category,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': taskList})
 
 # 查看任务详情
 @log.route('/select',methods=['POST'])
 def selectById():
     taskid = request.form.get('taskid')
-
     task = query_db_outside(query['select_task'], (taskid,))
-
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': task})
 
 # 查询特定task的运行记录
 @log.route('/selctTaskLogById',methods=['POST'])
 def selectTaskLogByTaskId():
     taskid = request.form.get('taskid')
-
     task = query_db_outside(query['selctTaskLogById'], (taskid,))
-
     date = []
     result = []
 
@@ -68,9 +60,7 @@ def selectTaskLogByTaskId():
 def selectHistoryById():
     id = request.form.get('id')
     comments = request.form.get('comments')
-
     taskList = query_db_outside(query['updateComment'], (comments,id,))
-
     return jsonify({'code': 200, 'message': 'ok', 'data': ''})
 
 #查询errortask 通过时间
@@ -79,7 +69,7 @@ def selectErrorTaskByResulttime():
     date = request.form.get('date')
     fre = request.form.get('fre')
     sessionid = request.form.get('sessionid')
-    userid = redis.get(sessionid).decode()
+    userid = getuserid(sessionid)
 
     taskList = []
     if fre == 'daily':
@@ -96,8 +86,8 @@ def selectSpeErrorTaskByResulttime():
     date = request.form.get('date')
     fre = request.form.get('fre')
     module = request.form.get('module')
-    sessionid = request.form.get('sessionid')
-    userid = redis.get(sessionid).decode()
+    sessionid = request.args.get('sessionid')
+    userid = getuserid(sessionid)
 
     taskList = []
     if fre == 'daily':
@@ -107,3 +97,18 @@ def selectSpeErrorTaskByResulttime():
     if fre == 'monthly':
         taskList = query_db_outside(query['SelectSpeMonthlyErrorList'], (date,module,userid,))
     return jsonify({'code': 200, 'message': 'ok', 'data': taskList})
+
+def getuserid(sessionid):
+    if redis.get(sessionid) is not None:
+        return redis.get(sessionid).decode()
+    else:
+        return redis.get(sessionid)
+
+# @log.before_request
+# def before_request():
+#     sessionid = request.args.get('sessionid')
+#     if sessionid is None:
+#         sessionid = request.form.get('sessionid')
+#     userid = redis.get(sessionid)
+#     if userid is None:
+#         return jsonify({'code': 401, 'meaasge': 'No This User', 'data': ''})
