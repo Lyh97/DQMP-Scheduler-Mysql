@@ -39,7 +39,6 @@ def add_task():
                                        task_type, threshold, filepath, upload_time,
                                        update_time,content, upload_user_id, taskname))
     if run_now:
-        run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency, threshold=threshold, taskname=taskname)
         __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
                 'taskid': taskid,
