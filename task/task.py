@@ -15,7 +15,7 @@ redis = Redis()
 
 @task.route('/add/', methods=['GET', 'POST'])
 def add_task():
-    taskid = request.form.get('taskid')
+    taskid = str(uuid.uuid1()) #request.form.get('taskid')
     category = request.form.get('category')
     owner = request.form.get('owner')
     email = request.form.get('email')
@@ -77,7 +77,7 @@ def add_task():
     #status
     return jsonify({'code': 200 })
 
-
+#在task被更新后，时间会被重新安排，错过一次执行，update不应该影响时间
 @task.route('/update/', methods=['GET', 'POST'])
 def reschedule_task():
     taskid = request.form.get('taskid')
