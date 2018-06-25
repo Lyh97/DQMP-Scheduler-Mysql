@@ -48,14 +48,16 @@ def Login():
     userinfo = query_db_outside(query['selectUserInfo'], (username, password,))
     if (userinfo):
         sessionId = uuid.uuid1()
-        redis.set(sessionId, userinfo[0]['user_id'])
-
-        return jsonify({'code': 200, 'meaasge': 'Login Success', 'data': sessionId})
+        # redis.set(sessionId, userinfo[0]['user_id'])
+        redis.setex(sessionId, userinfo[0]['user_id'], 1*60*60)
+        print(sessionId)
+        return jsonify({'code': 200, 'meaasge': 'Login Success', 'data': sessionId, 'userid': userinfo[0]['user_id']})
     else:
         return jsonify({'code': 300, 'meaasge': 'Login Fail', 'data': ''})
 
 @app.route('/')
 def index():
+
     return app.send_static_file('index.html')
 
 app.register_blueprint(task, url_prefix='/task')

@@ -39,7 +39,7 @@ def add_task():
                                        task_type, threshold, filepath, upload_time,
                                        update_time,content, upload_user_id, taskname))
     if run_now:
-        # run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency, threshold=threshold, taskname=taskname)
+        run(user_id=upload_user_id, taskid=taskid, filepath=filepath, freqency=freqency, threshold=threshold, taskname=taskname)
         __main__.scheduler.add_job(func=run, kwargs={
                 'user_id': upload_user_id,
                 'taskid': taskid,
@@ -144,8 +144,8 @@ def run_task():
     taskid = request.form.get('taskid')
     freqency = request.form.get('freqency')
     threshold = int(request.form.get('threshold'))  # The threshold of result for sending the notice to owner
-    filepath = request.form.get('file_path')  # The path of the task need to run
-    upload_user_id = int(redis.get(request.form.get('upload_user_id')).decode())
+    filepath = request.form.get('filepath')  # The path of the task need to run
+    upload_user_id = int(request.form.get('upload_user_id'))
     taskname = request.form.get('taskname')
 
     __main__.scheduler.add_job(func=run, kwargs={
@@ -156,3 +156,5 @@ def run_task():
         'threshold': threshold,
         'taskname': taskname}, id=str(uuid.uuid1()), trigger='date', name=taskname, misfire_grace_time=60 * 60 * 24,
                                run_date=datetime.datetime.now() + datetime.timedelta(seconds=3))
+
+    return jsonify({'code': 200, 'meaasge': 'Task Start', 'data': ''})
