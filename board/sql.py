@@ -35,7 +35,6 @@ query = {
     WHERE user_id = IFNULL(?,user_id)
     GROUP BY result_time
     ''',
-
     'select_daily_desc': '''
     select result_time as Statistictime ,
        ifnull((select COUNT(taskid)
@@ -82,7 +81,11 @@ query = {
       FROM dailylog a
       WHERE a.result_time = dailylog.result_time AND a.status = 'Fail' AND a.category = dailylog.category),0) as failCount
     FROM dailylog
-    WHERE user_id = IFNULL(?,user_id) AND result_time = ?
+    WHERE user_id = IFNULL(?,user_id) AND result_time = (
+		SELECT MAX(result_time)
+		FROM dailylog
+		WHERE user_id = IFNULL(?,user_id)
+	)
     Group BY category
     ORDER BY result_time DESC
     ''',
@@ -93,7 +96,11 @@ query = {
       FROM weeklylog a
       WHERE a.result_time = weeklylog.result_time AND a.status = 'Fail' AND a.category = weeklylog.category),0) as failCount
     FROM weeklylog
-    WHERE user_id = IFNULL(?,user_id) AND result_time = ?
+    WHERE user_id = IFNULL(?,user_id) AND result_time = (
+		SELECT MAX(result_time)
+		FROM weeklylog
+		WHERE user_id = IFNULL(?,user_id)
+	)
     Group BY category
     ORDER BY result_time DESC
     ''',
@@ -104,7 +111,11 @@ query = {
       FROM monthlylog a
       WHERE a.result_time = monthlylog.result_time AND a.status = 'Fail' AND a.category = monthlylog.category),0) as failCount
     FROM monthlylog
-    WHERE user_id = IFNULL(?,user_id) AND result_time = ?
+    WHERE user_id = IFNULL(?,user_id) AND result_time = (
+		SELECT MAX(result_time)
+		FROM monthlylog
+		WHERE user_id = IFNULL(?,user_id)
+	)
     Group BY category
     ORDER BY result_time DESC
     ''',
@@ -184,21 +195,33 @@ query = {
     ORDER BY result_time DESC
     ''',
     'category_select_fail_daily': '''
-    select result_time,taskname,status,description
+    select taskid,result_time,taskname,status,description
     FROM dailylog
-    where result_time = ? AND category = ? AND user_id = IFNULL(?,user_id)
+    where result_time = (
+		SELECT MAX(result_time)
+		FROM dailylog
+		WHERE user_id = IFNULL(?,user_id)
+	) AND category = ? AND user_id = IFNULL(?,user_id)
     ORDER BY result_time DESC 
     ''',
     'category_select_fail_weekly': '''
-    select result_time,taskname,status,description
+    select taskid,result_time,taskname,status,description
     FROM weeklylog
-    where result_time = ? AND category = ? AND user_id = IFNULL(?,user_id)
+    where result_time = (
+		SELECT MAX(result_time)
+		FROM weeklylog
+		WHERE user_id = IFNULL(?,user_id)
+	) AND category = ? AND user_id = IFNULL(?,user_id)
     ORDER BY result_time DESC 
     ''',
     'category_monthly_fail_list': '''
-    select result_time,taskname,status,description
+    select taskid,result_time,taskname,status,description
     FROM monthlylog
-    where result_time = ? AND category = ? AND user_id = IFNULL(?,user_id)
+    where result_time = (
+		SELECT MAX(result_time)
+		FROM monthlylog
+		WHERE user_id = IFNULL(?,user_id)
+	) AND category = ? AND user_id = IFNULL(?,user_id)
     ORDER BY result_time DESC 
     ''',
     'select_being_performed': '''

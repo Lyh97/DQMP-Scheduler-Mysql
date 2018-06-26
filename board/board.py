@@ -54,7 +54,7 @@ def selectFailDailyList():
     sessionid = request.args.get('sessionid')
     userid = getuserid(sessionid)
     nowTime = datetime.datetime.now().strftime('%Y-%m-%d')
-    dailyList = query_db_outside(query['select_fail_daily'],(userid,nowTime,))
+    dailyList = query_db_outside(query['select_fail_daily'],(userid,userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': dailyList})
 # 查询weekly数据，按照模块分组，bashboard右上角
 @board.route('/weekly_fail_list', methods=['GET','POST'])
@@ -62,7 +62,7 @@ def selectFailWeekly():
     sessionid = request.args.get('sessionid')
     userid = getuserid(sessionid)
     thisMonday = getThisMonday()
-    weeklyList = query_db_outside(query['select_fail_weekly'],(userid,thisMonday,))
+    weeklyList = query_db_outside(query['select_fail_weekly'],(userid,userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': weeklyList})
 # 查询monthly数据，按照模块分组，bashboard右上角
 @board.route('/monthly_fail_list', methods=['GET','POST'])
@@ -70,7 +70,7 @@ def selectFailMonthly():
     sessionid = request.args.get('sessionid')
     userid = getuserid(sessionid)
     nowTime = datetime.datetime.now().strftime('%Y-%m')
-    monthlyList = query_db_outside(query['monthly_fail_list'],(userid,nowTime,))
+    monthlyList = query_db_outside(query['monthly_fail_list'],(userid,userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': monthlyList})
 
 
@@ -110,7 +110,7 @@ def selectCategoryFailDailyList():
     sessionid = request.args.get('sessionid')
     userid = getuserid(sessionid)
     nowTime = datetime.datetime.now().strftime('%Y-%m-%d')
-    dailyList = query_db_outside(query['category_select_fail_daily'],(nowTime,category,userid,))
+    dailyList = query_db_outside(query['category_select_fail_daily'],(category,userid,userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': dailyList})
 # 查询weekly错误数据
 @board.route('/category_weekly_fail_list', methods=['GET','POST'])
@@ -119,7 +119,7 @@ def selectCategoryFailWeekly():
     sessionid = request.args.get('sessionid')
     userid = getuserid(sessionid)
     thisMonday = getThisMonday()
-    weeklyList = query_db_outside(query['category_select_fail_weekly'],(thisMonday,category,userid,))
+    weeklyList = query_db_outside(query['category_select_fail_weekly'],(category,userid,userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': weeklyList})
 # 查询monthly错误数据
 @board.route('/category_monthly_fail_list', methods=['GET','POST'])
@@ -128,7 +128,7 @@ def selectCategoryFailMonthly():
     sessionid = request.args.get('sessionid')
     userid = getuserid(sessionid)
     nowTime = datetime.datetime.now().strftime('%Y-%m')
-    monthlyList = query_db_outside(query['category_monthly_fail_list'],(nowTime,category,userid,))
+    monthlyList = query_db_outside(query['category_monthly_fail_list'],(category,userid,userid,))
     return jsonify({'code': 200, 'meaasge': 'ok', 'data': monthlyList})
 
 

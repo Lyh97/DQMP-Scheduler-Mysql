@@ -29,8 +29,8 @@ def run(user_id, taskid, content, freqency, threshold, taskname, category, descr
 
 
     table = {'daily': 'add_dailylog',
-             'weekly': 'add_dailylog',
-             'monthly': 'add_dailylog'}
+             'weekly': 'add_weeklylog',
+             'monthly': 'add_monthlylog'}
 
     if result_count > threshold:
         daily_status = 'Fail'
