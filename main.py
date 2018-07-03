@@ -51,7 +51,6 @@ def Login():
         sessionId = uuid.uuid1()
         # redis.set(sessionId, userinfo[0]['user_id'])
         redis.setex(sessionId, userinfo[0]['user_id'], 1*60*60)
-        response.set_cookie('snakes', '3', max_age=600)
         return jsonify({'code': 200, 'meaasge': 'Login Success', 'data': sessionId, 'userid': userinfo[0]['user_id']})
     else:
         return jsonify({'code': 300, 'meaasge': 'Login Fail', 'data': ''})

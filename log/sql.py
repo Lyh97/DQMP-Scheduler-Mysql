@@ -34,46 +34,58 @@ query = {
       id = ?
     ''',
     'SelectDailyErrorList':'''
-      SELECT * 
-      FROM task 
-      WHERE taskid in (SELECT taskid 
-      from dailylog
-      WHERE result_time = ? AND status = 'Fail') AND upload_user_id = IFNULL(?,upload_user_id)
+      SELECT a.* 
+      FROM
+        (SELECT *
+            from dailylog
+            WHERE result_time = ? AND status = 'Fail' AND user_id = IFNULL(?,user_id)) b
+        LEFT JOIN task a 
+        ON a.taskid = b.taskid
     ''',
     'SelectWeeklyErrorList':'''
-      SELECT * 
-      FROM task 
-      WHERE taskid in (SELECT taskid 
-      from weeklylog
-      WHERE result_time = ? AND status = 'Fail') AND upload_user_id = IFNULL(?,upload_user_id)
+      SELECT a.* 
+      FROM
+        (SELECT *
+            from weeklylog
+            WHERE result_time = ? AND status = 'Fail' AND user_id = IFNULL(?,user_id)) b
+        LEFT JOIN task a 
+        ON a.taskid = b.taskid
     ''',
     'SelectMonthlyErrorList':'''
-      SELECT * 
-      FROM task 
-      WHERE taskid in (SELECT taskid 
-      from monthlylog
-      WHERE result_time = ? AND status = 'Fail') AND upload_user_id = IFNULL(?,upload_user_id)
+      SELECT a.* 
+      FROM
+        (SELECT *
+            from monthlylog
+            WHERE result_time = ? AND status = 'Fail' AND user_id = IFNULL(?,user_id)) b
+        LEFT JOIN task a 
+        ON a.taskid = b.taskid
     ''',
     'SelectSpeDailyErrorList':'''
-      SELECT * 
-      FROM task 
-      WHERE taskid in (SELECT taskid 
-      from dailylog
-      WHERE result_time = ? AND status = 'Fail' AND category = ?) AND upload_user_id = IFNULL(?,upload_user_id)
+      SELECT a.* 
+      FROM
+        (SELECT *
+            from dailylog
+            WHERE result_time = ? AND status = 'Fail' AND category = ? AND user_id = IFNULL(?,user_id)) b
+        LEFT JOIN task a 
+        ON a.taskid = b.taskid
     ''',
     'SelectSpeWeeklyErrorList':'''
-      SELECT * 
-      FROM task 
-      WHERE taskid in (SELECT taskid 
-      from weeklylog
-      WHERE result_time = ? AND status = 'Fail' AND category = ?) AND upload_user_id = IFNULL(?,upload_user_id)
+      SELECT a.* 
+      FROM
+        (SELECT *
+          from weeklylog
+          WHERE result_time = ? AND status = 'Fail' AND category = ? AND user_id = IFNULL(?,user_id)) b
+      LEFT JOIN task a 
+      ON a.taskid = b.taskid
     ''',
     'SelectSpeMonthlyErrorList':'''
-      SELECT * 
-      FROM task 
-      WHERE taskid in (SELECT taskid 
-      from monthlylog
-      WHERE result_time = ? AND status = 'Fail' AND category = ?) AND upload_user_id = IFNULL(?,upload_user_id)
+      SELECT a.* 
+      FROM
+        (SELECT *
+          from monthlylog
+          WHERE result_time = ? AND status = 'Fail' AND category = ? AND user_id = IFNULL(?,user_id)) b
+      LEFT JOIN task a 
+      ON a.taskid = b.taskid
     ''',
     'filtrateSelect':'''
       SELECT * ,
