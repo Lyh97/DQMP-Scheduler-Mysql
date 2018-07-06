@@ -48,12 +48,13 @@ def selectTaskLogByTaskId():
     task = query_db_outside(query['selctTaskLogById'], (taskid,))
     date = []
     result = []
-
+    tasktable = task.copy()
+    task.reverse()
     for i in task:
         date.append(i['run_time'])
         result.append(i['result'])
 
-    return jsonify({'code':200,'message':'ok','data':{'tab_data':task,'chart_data':{'run_time':date,'result':result}}})
+    return jsonify({'code':200,'message':'ok','data':{'tab_data':tasktable,'chart_data':{'run_time':date,'result':result}}})
 
 # 修改comments
 @log.route('/updateComment',methods=['POST'])

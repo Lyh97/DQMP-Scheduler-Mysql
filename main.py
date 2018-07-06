@@ -26,17 +26,6 @@ redis = Redis()
 
 DATABASE = './db/taskDB.db'
 
-#
-# @app.before_request
-# def before_request():
-#     g.db = sqlite3.connect(DATABASE)
-#
-# @app.teardown_request
-# def teardown_request(exception):
-#     if hasattr(g, 'db'):
-#         g.db.commit()
-#         g.db.close()
-
 def interval_job():
     print('date job')
 
