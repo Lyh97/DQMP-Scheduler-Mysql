@@ -5,7 +5,7 @@ from redis import Redis
 
 from db.query_db import query_db_outside
 from .sql import query
-# from SqlTask.SqlTask import run
+from SqlTask.SqlTask import run
 import time
 import uuid
 import __main__
@@ -38,49 +38,49 @@ def add_task():
                                        description, tag, enabled, freqency,
                                        task_type, threshold, filepath, upload_time,
                                        update_time,content, upload_user_id,taskname])
-    # if run_now:
-    #     __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id': upload_user_id,
-    #             'taskid': taskid,
-    #             'content': content,
-    #             'freqency': freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname,
-    #             'category': category,
-    #             'description': description}, id=str(uuid.uuid1()), trigger='date', name=taskname, misfire_grace_time=60 * 60 * 24,
-    #                                run_date=datetime.datetime.now() + datetime.timedelta(seconds=3))
-    #
-    # if enabled:
-    #     if freqency == 'daily':
-    #         __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id':upload_user_id,
-    #             'taskid':taskid,
-    #             'content':content,
-    #             'freqency':freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname,
-    #             'category': category,
-    #             'description': description}, id=taskid, trigger='interval', days=1, name=taskname, misfire_grace_time=60 * 60 * 24)
-    #     if freqency == 'weekly':
-    #         __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id': upload_user_id,
-    #             'taskid': taskid,
-    #             'content': content,
-    #             'freqency': freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname,
-    #             'category': category,
-    #             'description': description}, id=taskid, trigger='interval', weeks=1, name=taskname, misfire_grace_time=60 * 60 * 24)
-    #     if freqency == 'monthly':
-    #         __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id': upload_user_id,
-    #             'taskid': taskid,
-    #             'content': content,
-    #             'freqency': freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname,
-    #             'category': category,
-    #             'description': description}, id=taskid, trigger='interval', days=30, name=taskname, misfire_grace_time=60 * 60 * 24)
+    if run_now:
+        __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'content': content,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname,
+                'category': category,
+                'description': description}, id=str(uuid.uuid1()), trigger='date', name=taskname, misfire_grace_time=60 * 60 * 24,
+                                   run_date=datetime.datetime.now() + datetime.timedelta(seconds=3))
+
+    if enabled:
+        if freqency == 'daily':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id':upload_user_id,
+                'taskid':taskid,
+                'content':content,
+                'freqency':freqency,
+                'threshold': threshold,
+                'taskname': taskname,
+                'category': category,
+                'description': description}, id=taskid, trigger='interval', days=1, name=taskname, misfire_grace_time=60 * 60 * 24)
+        if freqency == 'weekly':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'content': content,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname,
+                'category': category,
+                'description': description}, id=taskid, trigger='interval', weeks=1, name=taskname, misfire_grace_time=60 * 60 * 24)
+        if freqency == 'monthly':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'content': content,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname,
+                'category': category,
+                'description': description}, id=taskid, trigger='interval', days=30, name=taskname, misfire_grace_time=60 * 60 * 24)
     #status
     return jsonify({'code': 200 })
 
@@ -108,39 +108,39 @@ def reschedule_task():
                                        description, tag, freqency,
                                        task_type, threshold, content,
                                        update_time, upload_user_id, taskname, taskid])
-    # if enabled:
-    #     __main__.scheduler.remove_job(taskid)
-    #
-    #     if freqency == 'daily':
-    #         __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id': upload_user_id,
-    #             'taskid': taskid,
-    #             'content': content,
-    #             'freqency': freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname,
-    #             'category': category,
-    #             'description': description}, id=taskid, trigger='interval', days=1, name=taskname, misfire_grace_time=60 * 60 * 24)
-    #     if freqency == 'weekly':
-    #         __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id': upload_user_id,
-    #             'taskid': taskid,
-    #             'content': content,
-    #             'freqency': freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname,
-    #             'category': category,
-    #             'description': description}, id=taskid, trigger='interval', weeks=1, name=taskname, misfire_grace_time=60 * 60 * 24)
-    #     if freqency == 'monthly':
-    #         __main__.scheduler.add_job(func=run, kwargs={
-    #             'user_id': upload_user_id,
-    #             'taskid': taskid,
-    #             'content': content,
-    #             'freqency': freqency,
-    #             'threshold': threshold,
-    #             'taskname': taskname,
-    #             'category': category,
-    #             'description': description}, id=taskid, trigger='interval', days=30, name=taskname, misfire_grace_time=60 * 60 * 24)
+    if enabled:
+        __main__.scheduler.remove_job(taskid)
+
+        if freqency == 'daily':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'content': content,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname,
+                'category': category,
+                'description': description}, id=taskid, trigger='interval', days=1, name=taskname, misfire_grace_time=60 * 60 * 24)
+        if freqency == 'weekly':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'content': content,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname,
+                'category': category,
+                'description': description}, id=taskid, trigger='interval', weeks=1, name=taskname, misfire_grace_time=60 * 60 * 24)
+        if freqency == 'monthly':
+            __main__.scheduler.add_job(func=run, kwargs={
+                'user_id': upload_user_id,
+                'taskid': taskid,
+                'content': content,
+                'freqency': freqency,
+                'threshold': threshold,
+                'taskname': taskname,
+                'category': category,
+                'description': description}, id=taskid, trigger='interval', days=30, name=taskname, misfire_grace_time=60 * 60 * 24)
 
     return jsonify({'code': 200})
 
@@ -164,15 +164,15 @@ def run_task():
     category = request.form.get('category')
     description = request.form.get('description')
 
-    # __main__.scheduler.add_job(func=run, kwargs={
-    #     'user_id': upload_user_id,
-    #     'taskid': taskid,
-    #     'content': content,
-    #     'freqency': freqency,
-    #     'threshold': threshold,
-    #     'taskname': taskname,
-    #     'category': category,
-    #     'description': description}, id=str(uuid.uuid1()), trigger='date', name=taskname, misfire_grace_time=60 * 60 * 24,
-    #                            run_date=datetime.datetime.now() + datetime.timedelta(seconds=3))
+    __main__.scheduler.add_job(func=run, kwargs={
+        'user_id': upload_user_id,
+        'taskid': taskid,
+        'content': content,
+        'freqency': freqency,
+        'threshold': threshold,
+        'taskname': taskname,
+        'category': category,
+        'description': description}, id=str(uuid.uuid1()), trigger='date', name=taskname, misfire_grace_time=60 * 60 * 24,
+                               run_date=datetime.datetime.now() + datetime.timedelta(seconds=3))
 
     return jsonify({'code': 200, 'meaasge': 'Task Start', 'data': ''})
