@@ -6,11 +6,12 @@ query = {
       SELECT * ,
        (select COUNT(taskid)
          from result_tab a
-         WHERE a.taskid = task.taskid) as totalrun,
+         WHERE a.taskid = t.taskid) as totalrun,
        (select COUNT(taskid)
          from result_tab a
-         WHERE a.taskid = task.taskid And a.status = 'Fail') as totalfails
-      From task
+         WHERE a.taskid = t.taskid And a.status = 'Fail') as totalfails,
+       (select result FROM result_tab WHERE taskid = t.taskid ORDER BY run_time DESC limit 1) as count
+      From task t
       WHERE remove = 0 AND upload_user_id = IFNULL(%s,upload_user_id)
       ORDER BY last_runtime DESC
     ''',
