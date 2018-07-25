@@ -9,7 +9,7 @@ redis = Redis()
 @user.route('/getimg', methods=['POST'])
 def getImg():
     username = request.form.get('username')
-    imgurl = query_db_outside(query['selectUserImg'], (username,))
+    imgurl = query_db_outside(query['selectUserImg'], (username))
     if (imgurl):
         return jsonify({'code': 200, 'meaasge': 'ok', 'data': imgurl[0]['imgpath']})
     else:
@@ -30,7 +30,7 @@ def getHeadImgByUserid():
     if redis.get(sessionid) is not None:
         userid = redis.get(sessionid).decode()
         print(userid)
-        imgurl = query_db_outside(query['selectUserImgByUserid'], (userid,))
+        imgurl = query_db_outside(query['selectUserImgByUserid'], (userid))
         return jsonify({'code': 200, 'meaasge': 'ok', 'data': imgurl[0]['imgpath']})
 
 @user.route('/checkSession', methods=['POST'])

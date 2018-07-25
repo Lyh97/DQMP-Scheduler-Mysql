@@ -8,7 +8,7 @@ query = {
        FROM dailylog b
        where status='Fail' AND b.result_time = dailylog.result_time ),0) as Totalnumberoferrortasks
     FROM dailylog
-    WHERE user_id = IFNULL(?,user_id)
+    WHERE user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ''',
     'select_weekly': '''
@@ -20,7 +20,7 @@ query = {
       FROM weeklylog b
       where status='Fail' AND b.result_time = weeklylog.result_time ),0) as Totalnumberoferrortasks
     FROM weeklylog
-    WHERE user_id = IFNULL(?,user_id)
+    WHERE user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ''',
     'monthly_list': '''
@@ -32,7 +32,7 @@ query = {
       FROM monthlylog b
       where status='Fail' AND b.result_time = monthlylog.result_time ),0) as Totalnumberoferrortasks
     FROM monthlylog
-    WHERE user_id = IFNULL(?,user_id)
+    WHERE user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ''',
     'select_daily_desc': '''
@@ -44,7 +44,7 @@ query = {
        FROM dailylog b
        where status='Fail' AND b.result_time = dailylog.result_time ),0) as Totalnumberoferrortasks
     FROM dailylog
-    WHERE user_id = IFNULL(?,user_id)
+    WHERE user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ORDER BY result_time DESC
     ''',
@@ -57,7 +57,7 @@ query = {
       FROM weeklylog b
       where status='Fail' AND b.result_time = weeklylog.result_time ),0) as Totalnumberoferrortasks
     FROM weeklylog
-    WHERE user_id = IFNULL(?,user_id)
+    WHERE user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ORDER BY result_time DESC
     ''',
@@ -70,7 +70,7 @@ query = {
       FROM monthlylog b
       where status='Fail' AND b.result_time = monthlylog.result_time ),0) as Totalnumberoferrortasks
     FROM monthlylog
-    WHERE user_id = IFNULL(?,user_id)
+    WHERE user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ORDER BY result_time DESC
     ''',
@@ -79,92 +79,89 @@ query = {
     COUNT(id) as totalCount,
     ifnull((select COUNT(id)
       FROM dailylog a
-      WHERE a.result_time = dailylog.result_time AND a.status = 'Fail' AND a.category = dailylog.category),0) as failCount
+      WHERE a.result_time = ( SELECT MAX(result_time) FROM dailylog) AND a.status = 'Fail' AND a.category = dailylog.category),0) as failCount
     FROM dailylog
-    WHERE user_id = IFNULL(?,user_id) AND result_time = (
+    WHERE user_id = IFNULL(%s,user_id) AND result_time = (
 		SELECT MAX(result_time)
 		FROM dailylog
-		WHERE user_id = IFNULL(?,user_id)
+		WHERE user_id = IFNULL(%s,user_id)
 	)
     Group BY category
-    ORDER BY result_time DESC
     ''',
     'select_fail_weekly': '''
     select category as Module, 
     COUNT(id) as totalCount,
     ifnull((select COUNT(id)
       FROM weeklylog a
-      WHERE a.result_time = weeklylog.result_time AND a.status = 'Fail' AND a.category = weeklylog.category),0) as failCount
+      WHERE a.result_time = ( SELECT MAX(result_time) FROM weeklylog)  AND a.status = 'Fail' AND a.category = weeklylog.category),0) as failCount
     FROM weeklylog
-    WHERE user_id = IFNULL(?,user_id) AND result_time = (
+    WHERE user_id = IFNULL(%s,user_id) AND result_time = (
 		SELECT MAX(result_time)
 		FROM weeklylog
-		WHERE user_id = IFNULL(?,user_id)
+		WHERE user_id = IFNULL(%s,user_id)
 	)
     Group BY category
-    ORDER BY result_time DESC
     ''',
     'monthly_fail_list': '''
     select category as Module, 
     COUNT(id) as totalCount,
     ifnull((select COUNT(id)
       FROM monthlylog a
-      WHERE a.result_time = monthlylog.result_time AND a.status = 'Fail' AND a.category = monthlylog.category),0) as failCount
+      WHERE a.result_time = ( SELECT MAX(result_time) FROM monthlylog) AND a.status = 'Fail' AND a.category = monthlylog.category),0) as failCount
     FROM monthlylog
-    WHERE user_id = IFNULL(?,user_id) AND result_time = (
+    WHERE user_id = IFNULL(%s,user_id) AND result_time = (
 		SELECT MAX(result_time)
 		FROM monthlylog
-		WHERE user_id = IFNULL(?,user_id)
+		WHERE user_id = IFNULL(%s,user_id)
 	)
     Group BY category
-    ORDER BY result_time DESC
     ''',
     'category_select_daily': '''
     select result_time as Statistictime ,
        ifnull((select COUNT(taskid)
        FROM dailylog a
-       WHERE a.result_time = dailylog.result_time AND category = ?),0) as Totalnumberoftasks,
+       WHERE a.result_time = dailylog.result_time AND category = %s),0) as Totalnumberoftasks,
        ifnull((select COUNT(taskid)
        FROM dailylog b
-       where status='Fail' AND b.result_time = dailylog.result_time AND category = ?),0) as Totalnumberoferrortasks
+       where status='Fail' AND b.result_time = dailylog.result_time AND category = %s),0) as Totalnumberoferrortasks
     FROM dailylog
-    WHERE category = ? AND user_id = IFNULL(?,user_id)
+    WHERE category = %s AND user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ''',
     'category_select_weekly': '''
     select result_time as Statistictime ,
       ifnull((select COUNT(taskid)
       FROM weeklylog a
-      WHERE a.result_time = weeklylog.result_time AND category = ?),0) as Totalnumberoftasks,
+      WHERE a.result_time = weeklylog.result_time AND category = %s),0) as Totalnumberoftasks,
       ifnull((select COUNT(taskid)
       FROM weeklylog b
-      where status='Fail' AND b.result_time = weeklylog.result_time AND category = ?),0) as Totalnumberoferrortasks
+      where status='Fail' AND b.result_time = weeklylog.result_time AND category = %s),0) as Totalnumberoferrortasks
     FROM weeklylog
-    WHERE category = ? AND user_id = IFNULL(?,user_id)
+    WHERE category = %s AND user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ''',
     'category_monthly_list': '''
     select result_time as Statistictime ,
       ifnull((select COUNT(taskid)
       FROM monthlylog a
-      WHERE a.result_time = monthlylog.result_time AND category = ?),0) as Totalnumberoftasks,
+      WHERE a.result_time = monthlylog.result_time AND category = %s),0) as Totalnumberoftasks,
       ifnull((select COUNT(taskid)
       FROM monthlylog b
-      where status='Fail' AND b.result_time = monthlylog.result_time AND category = ?),0) as Totalnumberoferrortasks
+      where status='Fail' AND b.result_time = monthlylog.result_time AND category = %s),0) as Totalnumberoferrortasks
     FROM monthlylog
-    WHERE category = ? AND user_id = IFNULL(?,user_id)
+    WHERE category = %s AND user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ''',
     'category_select_daily_desc': '''
     select result_time as Statistictime ,
        ifnull((select COUNT(taskid)
        FROM dailylog a
-       WHERE a.result_time = dailylog.result_time AND category = ?),0) as Totalnumberoftasks,
+       WHERE a.result_time = dailylog.result_time AND category = %s),0) as Totalnumberoftasks,
        ifnull((select COUNT(taskid)
        FROM dailylog b
-       where status='Fail' AND b.result_time = dailylog.result_time AND category = ?),0) as Totalnumberoferrortasks
+       where status='Fail' AND b.result_time = dailylog.result_time AND category = %s),0) as Totalnumberoferrortasks
     FROM dailylog
-    WHERE category = ? AND user_id = IFNULL(?,user_id)
+    WHERE category = %s AND user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ORDER BY result_time DESC
     ''',
@@ -172,12 +169,12 @@ query = {
     select result_time as Statistictime ,
       ifnull((select COUNT(taskid)
       FROM weeklylog a
-      WHERE a.result_time = weeklylog.result_time AND category = ?),0) as Totalnumberoftasks,
+      WHERE a.result_time = weeklylog.result_time AND category = %s),0) as Totalnumberoftasks,
       ifnull((select COUNT(taskid)
       FROM weeklylog b
-      where status='Fail' AND b.result_time = weeklylog.result_time AND category = ?),0) as Totalnumberoferrortasks
+      where status='Fail' AND b.result_time = weeklylog.result_time AND category = %s),0) as Totalnumberoferrortasks
     FROM weeklylog
-    WHERE category = ? AND user_id = IFNULL(?,user_id)
+    WHERE category = %s AND user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ORDER BY result_time DESC
     ''',
@@ -185,12 +182,12 @@ query = {
     select result_time as Statistictime ,
       ifnull((select COUNT(taskid)
       FROM monthlylog a
-      WHERE a.result_time = monthlylog.result_time AND category = ?),0) as Totalnumberoftasks,
+      WHERE a.result_time = monthlylog.result_time AND category = %s),0) as Totalnumberoftasks,
       ifnull((select COUNT(taskid)
       FROM monthlylog b
-      where status='Fail' AND b.result_time = monthlylog.result_time AND category = ?),0) as Totalnumberoferrortasks
+      where status='Fail' AND b.result_time = monthlylog.result_time AND category = %s),0) as Totalnumberoferrortasks
     FROM monthlylog
-    WHERE category = ? AND user_id = IFNULL(?,user_id)
+    WHERE category = %s AND user_id = IFNULL(%s,user_id)
     GROUP BY result_time
     ORDER BY result_time DESC
     ''',
@@ -200,8 +197,8 @@ query = {
     where result_time = (
 		SELECT MAX(result_time)
 		FROM dailylog
-		WHERE user_id = IFNULL(?,user_id)
-	) AND category = ? AND user_id = IFNULL(?,user_id)
+		WHERE user_id = IFNULL(%s,user_id)
+	) AND category = %s AND user_id = IFNULL(%s,user_id)
     ORDER BY result_time DESC 
     ''',
     'category_select_fail_weekly': '''
@@ -210,8 +207,8 @@ query = {
     where result_time = (
 		SELECT MAX(result_time)
 		FROM weeklylog
-		WHERE user_id = IFNULL(?,user_id)
-	) AND category = ? AND user_id = IFNULL(?,user_id)
+		WHERE user_id = IFNULL(%s,user_id)
+	) AND category = %s AND user_id = IFNULL(%s,user_id)
     ORDER BY result_time DESC 
     ''',
     'category_monthly_fail_list': '''
@@ -220,8 +217,8 @@ query = {
     where result_time = (
 		SELECT MAX(result_time)
 		FROM monthlylog
-		WHERE user_id = IFNULL(?,user_id)
-	) AND category = ? AND user_id = IFNULL(?,user_id)
+		WHERE user_id = IFNULL(%s,user_id)
+	) AND category = %s AND user_id = IFNULL(%s,user_id)
     ORDER BY result_time DESC 
     ''',
     'select_being_performed': '''
